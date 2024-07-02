@@ -1,13 +1,13 @@
 fileFormatVersion: 2
-guid: a5eb8abae2f56f24a801d64d1b5cb496
+guid: d755b09c15f9e4d40aaaee75c61c816d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2307986281715306530
-    second: export_icon_143019_0
+      213: -3781386263061145055
+    second: sign_write_icon_142969_0
   - first:
-      213: 1186551231104265846
-    second: export_icon_143019_1
+      213: -8452212464363756005
+    second: sign_write_icon_142969_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +49,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -103,13 +103,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: export_icon_143019_0
+      name: sign_write_icon_142969_0
       rect:
         serializedVersion: 2
-        x: 63
-        y: 41
-        width: 386
-        height: 302
+        x: 105
+        y: 127
+        width: 344
+        height: 344
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -117,20 +117,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2209d148b4d970020800000000000000
-      internalID: 2307986281715306530
+      spriteID: 12ad2b77a31d58bc0800000000000000
+      internalID: -3781386263061145055
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: export_icon_143019_1
+      name: sign_write_icon_142969_1
       rect:
         serializedVersion: 2
-        x: 169
-        y: 191
-        width: 174
-        height: 280
+        x: 63
+        y: 63
+        width: 386
+        height: 45
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -138,8 +138,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 67ea5cdde0a777010800000000000000
-      internalID: 1186551231104265846
+      spriteID: b16287f9b85b3ba80800000000000000
+      internalID: -8452212464363756005
       vertices: []
       indices: 
       edges: []
@@ -147,14 +147,16 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      sign_write_icon_142969_0: -3781386263061145055
+      sign_write_icon_142969_1: -8452212464363756005
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
