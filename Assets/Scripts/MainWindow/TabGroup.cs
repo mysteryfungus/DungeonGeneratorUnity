@@ -21,6 +21,9 @@ public class TabGroup : InitClass
 
     [SerializeField] private TabButton _activeButton;
 
+    private GameObject _activeTabPanel;
+    public GameObject ActiveTabPanel => _activeTabPanel;
+
     public override void Init()
     {
         foreach (var tab in _tabGroup) 
@@ -36,21 +39,28 @@ public class TabGroup : InitClass
         Debug.Log($"{this.name} инициализирован");
     }
 
-    private Color OnEnterButton()
+    private Color OnEnterButton(TabButton tabButton)
     {
         ResetButtons?.Invoke(_exitedColor);
 
-        return _enteredColor;
+        if (tabButton.isActive)
+        {
+            return _selectedColor;
+        }
+        else
+        {
+			return _enteredColor;
+		}
     }
 
-    private Color OnExitButton() 
+    private Color OnExitButton(TabButton tabButton) 
     {
 		ResetButtons?.Invoke(_exitedColor);
 
         return _exitedColor;
 	}
 
-    private Color OnClickButton()
+    private Color OnClickButton(TabButton tabButton)
     {
 		ResetButtons?.Invoke(_exitedColor);
 
@@ -62,6 +72,7 @@ public class TabGroup : InitClass
         _activeButton.isActive = false;
         _activeButton.DisablePanel();
 
+        _activeTabPanel = newActiveButton.TabPanel;
         _activeButton = newActiveButton;
     }
 }

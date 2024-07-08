@@ -9,13 +9,15 @@ public class TabButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 {
 	[SerializeField] private GameObject _tabPanel;
 
+	public GameObject TabPanel => _tabPanel;
+
 	//Проверка на выбранную кнопку
 	public bool isActive = false;
 
 	//Группа событий для сообщения TabGroud о состоянии и реакции кнопки
-	public Func<Color> Exit;
-	public Func<Color> Enter;
-	public Func<Color> Click;
+	public Func<TabButton, Color> Exit;
+	public Func<TabButton, Color> Enter;
+	public Func<TabButton, Color> Click;
 	
 	//Событие смены активной кнопки
 	public Action<TabButton> ChangeActive;
@@ -35,13 +37,13 @@ public class TabButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 		isActive = true;
 		_tabPanel.SetActive(true);
 
-		this._background.color = Click.Invoke();
+		this._background.color = Click.Invoke(this);
 	}
 
 	//Реакция на наведения курсора
 	public void OnPointerEnter(PointerEventData eventData)
 	{
-		this._background.color = Enter.Invoke();
+		this._background.color = Enter.Invoke(this);
 	}
 
 	//Реакция на выход курсора за пределы кнопки
@@ -49,7 +51,7 @@ public class TabButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 	{
 		if (!isActive)
 		{
-			this._background.color = Exit.Invoke();
+			this._background.color = Exit.Invoke(this);
 		}
 	}
 
