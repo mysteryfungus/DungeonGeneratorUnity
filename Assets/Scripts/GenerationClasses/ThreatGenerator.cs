@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace GenerationClasses
 {
@@ -52,6 +51,11 @@ namespace GenerationClasses
                 {"Severe", 30 },
                 {"Extreme", 40 }
             };
+        
+        public void Init()
+        {
+            //Инициализация себя и MonsterGenerator + HazardGenerator
+        }
 
         public void BuildEncounter(int party_member_amount, int party_level, int room_amount)
         {
