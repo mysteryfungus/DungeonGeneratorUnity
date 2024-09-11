@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+/*
 namespace GenerationClasses
 {
     class ThreatGenerator
@@ -22,7 +22,7 @@ namespace GenerationClasses
          * 1, List<Monster>, List<Hazard>
          * 2, List<Monster>, List<Hazard>
          * 
-         */
+         *'/
         public ThreatGenerator()
         {
 
@@ -101,7 +101,7 @@ namespace GenerationClasses
              * monsterGenerator.BuildCombat((int)(xpbudget*0.9))
              * hazardGenerator.BuildHazard((int)(xpbudget*0.1))
              * }
-             * else monsterGenerator.BuildCombat(xpbudget)*/
+             * else monsterGenerator.BuildCombat(xpbudget)*'/
             if ((int)(xpbudget * 0.1) >= 4)
             {
                 temp_monsters = monsterGenerator.BuildCombat((int)(xpbudget * 0.9), party_level);
@@ -113,3 +113,4 @@ namespace GenerationClasses
         }
     }
 }
+*/

@@ -1,7 +1,7 @@
 ﻿using DbClasses;
 using System;
 using System.Linq;
-
+/*
 namespace GenerationClasses
 {
     class NameGenerator
@@ -259,3 +259,4 @@ namespace GenerationClasses
         }
     }
 }
+*/

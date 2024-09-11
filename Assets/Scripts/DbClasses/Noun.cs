@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace DbClasses
 {
     class Noun

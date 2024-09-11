@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-
+/*
 namespace GenerationClasses
 {
     class HazardGenerator
     {
-        private ApplicationContext db;
+        private object db;
         private List<Hazard> hazards;
 
         readonly Dictionary<int, int> simpleExpCostList = new Dictionary<int, int>()
@@ -111,3 +111,4 @@ namespace GenerationClasses
         }
     }
 }
+*/
