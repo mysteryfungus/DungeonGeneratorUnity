@@ -1,46 +1,84 @@
 ﻿using DbClasses;
+using Mono.Data.Sqlite;
 using System;
-using System.Linq;
-/*
+using System.Data;
+using Unity.VisualScripting;
+using UnityEngine;
+
 namespace GenerationClasses
 {
     class NameGenerator
     {
-        private ApplicationContext db;
-        Random rnd = new Random();
-        int rows = 0;
+        private string dbName;
+        System.Random rnd = new System.Random();
+        int nameRowsCount = 0;
+        int nounRowsCount = 0;
+        int adjRowsCount = 0;
         Name found_name = null;
         Noun found_noun = null;
         Adjective found_adjective = null;
         Gender gender;
         string result = "";
         string temp_word = "";
+        DataTable namesDT;
+        DataTable nounsDT = null;
+        DataTable adjDT;
 
         public NameGenerator()
         {
 
         }
 
-        public NameGenerator(ApplicationContext _db)
+        public NameGenerator(string _dbName)
         {
-            this.db = _db;
+            this.dbName = _dbName;
         }
 
         public string GenerateName()
         {
             result = "";
-            //выясняем, сколько всего записей в таблице "Names"
+            using (SqliteConnection connection = new SqliteConnection(dbName)) 
+            {
+                connection.Open();
+
+                using (SqliteCommand command = connection.CreateCommand()) 
+                {
+                    command.CommandText = "SELECT * FROM Names";
+
+                    using (SqliteDataReader reader = command.ExecuteReader()) 
+                    {
+                        //сохраняем результат как DataTable;
+                        namesDT = reader.GetSchemaTable(); //Неверная имплементация!
+                        //выясняем, сколько всего записей в таблице "Names"
+                        nameRowsCount = namesDT.Rows.Count;
+                        //Debug.Log(namesDT.Rows[rnd.Next(nounRowsCount) + 1]);
+                        foreach (DataRow dr in namesDT.Rows)
+                        {
+                            string temp_info = "";
+                            foreach (var item in dr.ItemArray)
+                            {
+                                temp_info += item;
+                                temp_info += " ";
+                            }
+                            Debug.Log(temp_info);
+                        }
+                        //found_name = Name.ToName(namesDT.Rows[rnd.Next(nounRowsCount) + 1]);
+                    }
+                }
+                connection.Close();
+            } 
+/*
             int rows = db.Names.Count();
             //выбираем случайное
             found_name = db.Names.Find(rnd.Next(rows) + 1);
             gender = found_name.Gender;
-
+*/
             //главный метод класса, вызвающий все остальные
             switch (RandomNameType())
             {
                 case 0:
                     return GenerateNameType0();
-                case 1:
+                /*case 1:
                     return GenerateNameType1();
                 case 2:
                     return GenerateNameType2();
@@ -55,10 +93,54 @@ namespace GenerationClasses
                 case 7:
                     return GenerateNameType7();
                 case 8:
-                    return GenerateNameType8();
+                    return GenerateNameType8();*/
                 default:
                     return "ашыбка";
             }
+        }
+
+        private void GetNounsDT()
+        {
+            using (SqliteConnection connection = new SqliteConnection(dbName)) 
+            {
+                connection.Open();
+
+                using (SqliteCommand command = connection.CreateCommand()) 
+                {
+                    command.CommandText = "SELECT * FROM Nouns";
+
+                    using (SqliteDataReader reader = command.ExecuteReader()) 
+                    {
+                        //сохраняем результат как DataTable;
+                        namesDT = reader.GetSchemaTable();
+                        //выясняем, сколько всего записей в таблице "Nouns"
+                        nameRowsCount = namesDT.Rows.Count;
+                    }
+                }
+                connection.Close();
+            } 
+        }
+
+        private void GetAdjDT()
+        {
+            using (SqliteConnection connection = new SqliteConnection(dbName)) 
+            {
+                connection.Open();
+
+                using (SqliteCommand command = connection.CreateCommand()) 
+                {
+                    command.CommandText = "SELECT * FROM Adjectives";
+
+                    using (SqliteDataReader reader = command.ExecuteReader()) 
+                    {
+                        //сохраняем результат как DataTable;
+                        adjDT = reader.GetSchemaTable();
+                        //выясняем, сколько всего записей в таблице "Adjectives"
+                        adjRowsCount = adjDT.Rows.Count;
+                    }
+                }
+                connection.Close();
+            } 
         }
 
         public string CheckTitle()
@@ -69,10 +151,21 @@ namespace GenerationClasses
 
         private int RandomNameType()
         {
-            return rnd.Next(9);
+            //return rnd.Next(9);
+            return 0;
             //Формулы названий, вернет от 0 до 8
         }
 
+        private string GenerateNameType0()
+        {
+            if (nounsDT == null) GetNounsDT();
+            //Название + сущЕд
+            found_noun = Noun.ToNoun(nounsDT.Rows.Find(rnd.Next(nounRowsCount) + 1));
+            result = found_name.SingNom() + " " + found_noun.SingGen();
+            return result;
+            //return "Пещера Гоблина"
+        }
+/*
         private string GenerateNameType0()
         {
             //Название + сущЕд
@@ -256,7 +349,6 @@ namespace GenerationClasses
 
             return result;
             //return "Великая пещера великого гоблина";
-        }
+        }*/
     }
 }
-*/

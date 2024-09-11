@@ -1,4 +1,7 @@
-﻿namespace DbClasses
+﻿using System;
+using System.Data;
+
+namespace DbClasses
 {
     class Name
     {
@@ -24,6 +27,32 @@
             this.PluralNominative = PluralNominative;
             this.PluralGenitive = PluralGenitive;
             this.Gender = gender;
+        }
+
+        public static Name ToName(DataRow dataRow)
+        {
+            string Base = dataRow["Base"].ToString();
+            string SingularNominative = dataRow["SingularNominative"].ToString();
+            string SingularGenitive = dataRow["SingularGenitive"].ToString();
+            string PluralNominative = dataRow["PluralNominative"].ToString();
+            string PluralGenitive = dataRow["PluralGenitive"].ToString();
+            Gender gender = ToGender(dataRow["Gender"].ToString());
+            return new Name(Base, SingularNominative,  SingularGenitive,  PluralNominative, PluralGenitive, gender);
+        }
+
+        private static Gender ToGender(string genderString)
+        {
+            switch (genderString)
+            {
+                case "Masculine":
+                    return Gender.Masculine;
+                case "Feminine":
+                    return Gender.Feminine;
+                case "Neuter":
+                    return Gender.Neuter;
+                default: 
+                    return Gender.None;
+            }
         }
 
         public string SingNom()

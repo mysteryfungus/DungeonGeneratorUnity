@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Data;
 
 namespace DbClasses
 {
@@ -29,6 +30,33 @@ namespace DbClasses
             this.PluralGenitive = PluralGenitive;
             this.Gender = gender;
             this.Title = title;
+        }
+
+        public static Noun ToNoun(DataRow dataRow)
+        {
+            string Base = dataRow["Base"].ToString();
+            string SingularNominative = dataRow["SingularNominative"].ToString();
+            string SingularGenitive = dataRow["SingularGenitive"].ToString();
+            string PluralNominative = dataRow["PluralNominative"].ToString();
+            string PluralGenitive = dataRow["PluralGenitive"].ToString();
+            Gender gender = ToGender(dataRow["Gender"].ToString());
+            int title = (int)dataRow["Title"];
+            return new Noun(Base, SingularNominative,  SingularGenitive,  PluralNominative, PluralGenitive, gender, title);
+        }
+
+        private static Gender ToGender(string genderString)
+        {
+            switch (genderString)
+            {
+                case "Masculine":
+                    return Gender.Masculine;
+                case "Feminine":
+                    return Gender.Feminine;
+                case "Neuter":
+                    return Gender.Neuter;
+                default: 
+                    return Gender.None;
+            }
         }
 
         private bool CheckTitle()

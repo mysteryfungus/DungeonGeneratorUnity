@@ -1,18 +1,23 @@
 ﻿using UnityEngine;
 using System.Data;
 using Mono.Data.Sqlite;
-using System.IO;
 using SQLite;
+using UnityEngine.UI;
+using GenerationClasses;
 
 namespace DbClasses
 {
-class DBConnection : MonoBehaviour
+class DBManager : MonoBehaviour
 {
     private string dbName = "URI=file:" + Application.dataPath + "/Dungeon.db";
+    [SerializeField] Text nameField;
+    private NameGenerator nameGen;
 
     void Start()
     {
-        DisplayInfoForTesting();
+        InitGenerators();
+        string dungeonName = nameGen.GenerateName();
+        nameField.text = dungeonName;
     }
 
     void DisplayInfoForTesting()
@@ -32,6 +37,12 @@ class DBConnection : MonoBehaviour
             }
             connection.Close();
         }
+    }
+
+    void InitGenerators()
+    {
+        nameGen = new NameGenerator(dbName);
+
     }
 }
 }
