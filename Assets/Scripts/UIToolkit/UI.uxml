@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="test" src="project://database/Assets/Scripts/UIToolkit/test.uxml?fileID=9197481963319205126&amp;guid=2a773df7fee6f19429a002ce4c70c94a&amp;type=3#test" />
+    <Style src="project://database/Assets/Scripts/UIToolkit/Styles/styles.uss?fileID=7433441132597879392&amp;guid=837716c4131a87643aaa31bf22144ac5&amp;type=3#styles" />
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row; justify-content: space-between; align-self: stretch;">
+        <ui:VisualElement name="Panel" style="flex-grow: 0; background-color: rgb(68, 65, 62); width: 32%; flex-shrink: 0; flex-direction: column-reverse;">
+            <ui:GroupBox name="Buttons" style="flex-shrink: 1; height: 109px; background-color: rgb(83, 79, 75);" />
+            <ui:VisualElement name="Settings" style="flex-grow: 1; height: 492px;">
+                <ui:GroupBox name="Tabs" style="height: 70px; margin-bottom: 0; padding-bottom: 0; flex-direction: row; margin-left: 0; margin-right: 0; padding-left: 0;">
+                    <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Simple" class="button-tab" />
+                    <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Complex" class="button-tab" />
+                </ui:GroupBox>
+                <ui:VisualElement style="flex-grow: 1; background-color: rgb(212, 204, 178);">
+                    <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto" style="flex-grow: 1; border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255); background-color: rgba(255, 255, 255, 0); display: flex;">
+                        <ui:Instance template="test" name="test" />
+                    </ui:ScrollView>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label tabindex="-1" text="Настройки генерации подземелья" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Label" style="flex-grow: 0.8; flex-shrink: 1; -unity-text-align: middle-center; font-size: 46px; color: rgb(255, 255, 255); white-space: normal; height: 0;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

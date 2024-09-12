@@ -1,0 +1,11 @@
+.button-tab {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    flex-shrink: 1;
+    flex-grow: 1;
+    background-color: rgb(212, 204, 178);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-width: 0;
+    font-size: 35px;
+}
