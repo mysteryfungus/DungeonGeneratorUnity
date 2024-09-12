@@ -4,6 +4,7 @@ using Mono.Data.Sqlite;
 using SQLite;
 using UnityEngine.UI;
 using GenerationClasses;
+using System.IO;
 
 namespace DbClasses
 {
@@ -16,33 +17,28 @@ class DBManager : MonoBehaviour
     void Start()
     {
         InitGenerators();
-        string dungeonName = nameGen.GenerateName();
-        nameField.text = dungeonName;
-    }
-
-    void DisplayInfoForTesting()
-    {
-        using (SqliteConnection connection = new SqliteConnection(dbName)) 
-        {
-            connection.Open();
-
-            using (SqliteCommand command = connection.CreateCommand()) 
-            {
-                command.CommandText = "SELECT * FROM Adjectives";
-
-                 using (IDataReader reader = command.ExecuteReader()) 
-                 {
-                    while (reader.Read()) Debug.Log(reader["Base"]);
-                 }
-            }
-            connection.Close();
-        }
+        if (CheckDB()) ChangeName(nameGen.GenerateName()); //при запуске один раз генерирует название, если существует дб
     }
 
     void InitGenerators()
     {
         nameGen = new NameGenerator(dbName);
+        //threatGen (в нем уже monter + hazard)
+    }
 
+    bool CheckDB()
+    {
+        if (!File.Exists(Application.dataPath + "/Dungeon.db")) 
+        {
+            Debug.Log("Dungeon.db Not Found in " + Application.dataPath + ", Everything Will Break");
+            return false;
+        }
+        else return true;
+    }
+
+    private void ChangeName(string newName)
+    {
+        nameField.text = newName;
     }
 }
 }

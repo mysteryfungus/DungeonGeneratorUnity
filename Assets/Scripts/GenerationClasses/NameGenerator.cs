@@ -1,8 +1,6 @@
 ﻿using DbClasses;
 using Mono.Data.Sqlite;
-using System;
-using System.Data;
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace GenerationClasses
@@ -10,7 +8,7 @@ namespace GenerationClasses
     class NameGenerator
     {
         private string dbName;
-        System.Random rnd = new System.Random();
+        readonly System.Random rnd = new System.Random();
         int nameRowsCount = 0;
         int nounRowsCount = 0;
         int adjRowsCount = 0;
@@ -20,14 +18,9 @@ namespace GenerationClasses
         Gender gender;
         string result = "";
         string temp_word = "";
-        DataTable namesDT;
-        DataTable nounsDT = null;
-        DataTable adjDT;
-
-        public NameGenerator()
-        {
-
-        }
+        List<Name> names = null;
+        List<Noun> nouns = null;
+        List<Adjective> adjectives = null;
 
         public NameGenerator(string _dbName)
         {
@@ -37,48 +30,16 @@ namespace GenerationClasses
         public string GenerateName()
         {
             result = "";
-            using (SqliteConnection connection = new SqliteConnection(dbName)) 
-            {
-                connection.Open();
-
-                using (SqliteCommand command = connection.CreateCommand()) 
-                {
-                    command.CommandText = "SELECT * FROM Names";
-
-                    using (SqliteDataReader reader = command.ExecuteReader()) 
-                    {
-                        //сохраняем результат как DataTable;
-                        namesDT = reader.GetSchemaTable(); //Неверная имплементация!
-                        //выясняем, сколько всего записей в таблице "Names"
-                        nameRowsCount = namesDT.Rows.Count;
-                        //Debug.Log(namesDT.Rows[rnd.Next(nounRowsCount) + 1]);
-                        foreach (DataRow dr in namesDT.Rows)
-                        {
-                            string temp_info = "";
-                            foreach (var item in dr.ItemArray)
-                            {
-                                temp_info += item;
-                                temp_info += " ";
-                            }
-                            Debug.Log(temp_info);
-                        }
-                        //found_name = Name.ToName(namesDT.Rows[rnd.Next(nounRowsCount) + 1]);
-                    }
-                }
-                connection.Close();
-            } 
-/*
-            int rows = db.Names.Count();
-            //выбираем случайное
-            found_name = db.Names.Find(rnd.Next(rows) + 1);
+            if (names == null) GetNamesT();
+            found_name = names[rnd.Next(nameRowsCount)];
             gender = found_name.Gender;
-*/
+
             //главный метод класса, вызвающий все остальные
             switch (RandomNameType())
             {
                 case 0:
                     return GenerateNameType0();
-                /*case 1:
+                case 1:
                     return GenerateNameType1();
                 case 2:
                     return GenerateNameType2();
@@ -93,13 +54,39 @@ namespace GenerationClasses
                 case 7:
                     return GenerateNameType7();
                 case 8:
-                    return GenerateNameType8();*/
+                    return GenerateNameType8();
                 default:
                     return "ашыбка";
             }
         }
 
-        private void GetNounsDT()
+        private void GetNamesT()
+        {
+            using (SqliteConnection connection = new SqliteConnection(dbName)) 
+            {
+                connection.Open();
+
+                using (SqliteCommand command = connection.CreateCommand()) 
+                {
+                    command.CommandText = "SELECT * FROM Names";
+
+                    using (SqliteDataReader reader = command.ExecuteReader()) 
+                    {
+                        names = new List<Name>();
+                        //сохраняем результат как List;
+                        while (reader.Read())
+                        {
+                            names.Add(Name.ToName(reader.GetValue(1), reader.GetValue(2), reader.GetValue(3), reader.GetValue(4),reader.GetValue(5),reader.GetValue(6)));
+                        }
+                        //выясняем, сколько всего записей в таблице "Names"
+                        nameRowsCount = names.Count;
+                    }
+                }
+                connection.Close();
+            } 
+        }
+
+        private void GetNounsT()
         {
             using (SqliteConnection connection = new SqliteConnection(dbName)) 
             {
@@ -111,17 +98,22 @@ namespace GenerationClasses
 
                     using (SqliteDataReader reader = command.ExecuteReader()) 
                     {
-                        //сохраняем результат как DataTable;
-                        namesDT = reader.GetSchemaTable();
+                        nouns = new List<Noun>();
+                        //сохраняем результат;
+                        while (reader.Read())
+                        {
+                            nouns.Add(Noun.ToNoun(reader.GetValue(1), reader.GetValue(2), reader.GetValue(3), reader.GetValue(4),reader.GetValue(5),reader.GetValue(6),reader.GetValue(7)));
+                        }
                         //выясняем, сколько всего записей в таблице "Nouns"
-                        nameRowsCount = namesDT.Rows.Count;
+                        nounRowsCount = nouns.Count;
+                        
                     }
                 }
                 connection.Close();
             } 
         }
 
-        private void GetAdjDT()
+        private void GetAdjT()
         {
             using (SqliteConnection connection = new SqliteConnection(dbName)) 
             {
@@ -133,44 +125,31 @@ namespace GenerationClasses
 
                     using (SqliteDataReader reader = command.ExecuteReader()) 
                     {
-                        //сохраняем результат как DataTable;
-                        adjDT = reader.GetSchemaTable();
+                        adjectives = new List<Adjective>();
+                        //сохраняем результат;
+                        while (reader.Read())
+                        {
+                            adjectives.Add(Adjective.ToAdjective(reader.GetValue(1), reader.GetValue(2), reader.GetValue(3), reader.GetValue(4),reader.GetValue(5),reader.GetValue(6),reader.GetValue(7), reader.GetValue(8)));
+                        }
                         //выясняем, сколько всего записей в таблице "Adjectives"
-                        adjRowsCount = adjDT.Rows.Count;
+                        adjRowsCount = adjectives.Count;
                     }
                 }
                 connection.Close();
             } 
         }
 
-        public string CheckTitle()
-        {
-
-            return "title";
-        }
-
         private int RandomNameType()
         {
-            //return rnd.Next(9);
-            return 0;
+            return rnd.Next(9);
             //Формулы названий, вернет от 0 до 8
         }
 
         private string GenerateNameType0()
         {
-            if (nounsDT == null) GetNounsDT();
+            if (nouns == null) GetNounsT();
             //Название + сущЕд
-            found_noun = Noun.ToNoun(nounsDT.Rows.Find(rnd.Next(nounRowsCount) + 1));
-            result = found_name.SingNom() + " " + found_noun.SingGen();
-            return result;
-            //return "Пещера Гоблина"
-        }
-/*
-        private string GenerateNameType0()
-        {
-            //Название + сущЕд
-            rows = db.Nouns.Count();
-            found_noun = db.Nouns.Find(rnd.Next(rows) + 1);
+            found_noun = nouns[rnd.Next(nounRowsCount)];
             result = found_name.SingNom() + " " + found_noun.SingGen();
             return result;
             //return "Пещера Гоблина"
@@ -178,9 +157,9 @@ namespace GenerationClasses
 
         private string GenerateNameType1()
         {
+            if (nouns == null) GetNounsT();
             //Название + сущМн
-            rows = db.Nouns.Count();
-            found_noun = db.Nouns.Find(rnd.Next(rows) + 1);
+            found_noun = nouns[rnd.Next(nounRowsCount)];
             result = found_name.SingNom() + " " + found_noun.PluralGen();
             return result;
             //return "Пещера гоблинов"
@@ -188,11 +167,11 @@ namespace GenerationClasses
 
         private string GenerateNameType2()
         {
+            if (nouns == null) GetNounsT();
+            if (adjectives == null) GetAdjT();
             //Название + прил + сущЕд
-            rows = db.Nouns.Count();
-            found_noun = db.Nouns.Find(rnd.Next(rows) + 1);
-            rows = db.Adjectives.Count();
-            found_adjective = db.Adjectives.Find(rnd.Next(rows) + 1);
+            found_noun = nouns[rnd.Next(nounRowsCount)];
+            found_adjective = adjectives[rnd.Next(adjRowsCount)];
             gender = found_noun.Gender;
 
             switch (gender)
@@ -211,22 +190,21 @@ namespace GenerationClasses
         }
         private string GenerateNameType3()
         {
+            if (nouns == null) GetNounsT();
+            if (adjectives == null) GetAdjT();
             //Название + прил + сущМн
-            rows = db.Nouns.Count();
-            found_noun = db.Nouns.Find(rnd.Next(rows) + 1);
-            rows = db.Adjectives.Count();
-            found_adjective = db.Adjectives.Find(rnd.Next(rows) + 1);
+            found_noun = nouns[rnd.Next(nounRowsCount)];
+            found_adjective = adjectives[rnd.Next(adjRowsCount)];
             result = found_name.SingNom() + " " + found_adjective.PluralGen(found_noun.Title) + " " + found_noun.PluralGen();
-
             return result;
             //return "Пещера Великих Гоблинов";
         }
 
         private string GenerateNameType4()
         {
+            if (adjectives == null) GetAdjT();
             //Прил + название
-            rows = db.Adjectives.Count();
-            found_adjective = db.Adjectives.Find(rnd.Next(rows) + 1);
+            found_adjective = adjectives[rnd.Next(adjRowsCount)];
             switch (gender)
             {
                 case Gender.Masculine : 
@@ -245,11 +223,11 @@ namespace GenerationClasses
 
         private string GenerateNameType5()
         {
+            if (nouns == null) GetNounsT();
+            if (adjectives == null) GetAdjT();
             //Прил + название + сущМн
-            rows = db.Adjectives.Count();
-            found_adjective = db.Adjectives.Find(rnd.Next(rows) + 1);
-            rows = db.Nouns.Count();
-            found_noun = db.Nouns.Find(rnd.Next(rows) + 1);
+            found_adjective = adjectives[rnd.Next(adjRowsCount)];
+            found_noun = nouns[rnd.Next(nounRowsCount)];
             switch (gender)
             {
                 case Gender.Masculine:
@@ -268,11 +246,11 @@ namespace GenerationClasses
 
         private string GenerateNameType6()
         {
+            if (nouns == null) GetNounsT();
+            if (adjectives == null) GetAdjT();
             //Прил + название + сущЕд
-            rows = db.Adjectives.Count();
-            found_adjective = db.Adjectives.Find(rnd.Next(rows) + 1);
-            rows = db.Nouns.Count();
-            found_noun = db.Nouns.Find(rnd.Next(rows) + 1);
+            found_adjective = adjectives[rnd.Next(adjRowsCount)];
+            found_noun = nouns[rnd.Next(nounRowsCount)];
             switch (gender)
             {
                 case Gender.Masculine:
@@ -291,9 +269,10 @@ namespace GenerationClasses
 
         private string GenerateNameType7()
         {
+            if (nouns == null) GetNounsT();
+            if (adjectives == null) GetAdjT();
             //Прил + название + прил + сущМнож
-            rows = db.Adjectives.Count();
-            found_adjective = db.Adjectives.Find(rnd.Next(rows) + 1);
+            found_adjective = adjectives[rnd.Next(adjRowsCount)];
             switch (gender)
             {
                 case Gender.Masculine:
@@ -306,9 +285,8 @@ namespace GenerationClasses
                     temp_word = found_adjective.SingNomNeuter() + " " + found_name.SingNom().ToLower();
                     break;
             }
-            found_adjective = db.Adjectives.Find(rnd.Next(rows) + 1);
-            rows = db.Nouns.Count();
-            found_noun = db.Nouns.Find(rnd.Next(rows) + 1);
+            found_adjective = adjectives[rnd.Next(adjRowsCount)];
+            found_noun = nouns[rnd.Next(nounRowsCount)];
             result = temp_word + " " + found_adjective.PluralGen(found_noun.Title) + " " + found_noun.PluralGen();
 
             return result;
@@ -317,9 +295,10 @@ namespace GenerationClasses
 
         private string GenerateNameType8()
         {
+            if (nouns == null) GetNounsT();
+            if (adjectives == null) GetAdjT();
             //Прил + название + прил + сущЕд
-            rows = db.Adjectives.Count();
-            found_adjective = db.Adjectives.Find(rnd.Next(rows) + 1);
+            found_adjective = adjectives[rnd.Next(adjRowsCount)];
             switch (gender)
             {
                 case Gender.Masculine:
@@ -332,9 +311,8 @@ namespace GenerationClasses
                     temp_word = found_adjective.SingNomNeuter() + " " + found_name.SingNom().ToLower();
                     break;
             }
-            found_adjective = db.Adjectives.Find(rnd.Next(rows) + 1);
-            rows = db.Nouns.Count();
-            found_noun = db.Nouns.Find(rnd.Next(rows) + 1);
+            found_adjective = adjectives[rnd.Next(adjRowsCount)];
+            found_noun = nouns[rnd.Next(nounRowsCount)];
             gender = found_noun.Gender;
             switch (gender)
             {
@@ -349,6 +327,6 @@ namespace GenerationClasses
 
             return result;
             //return "Великая пещера великого гоблина";
-        }*/
+        }
     }
 }

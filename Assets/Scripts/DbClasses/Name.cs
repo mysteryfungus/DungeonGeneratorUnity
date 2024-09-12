@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data;
+using UnityEngine;
 
 namespace DbClasses
 {
@@ -13,12 +13,6 @@ namespace DbClasses
         public string PluralGenitive { get; set; }
         public Gender Gender { get; set; }
 
-
-        public Name()
-        {
-
-        }
-
         public Name(string Base, string SingularNominative, string SingularGenitive, string PluralNominative, string PluralGenitive, Gender gender)
         {
             this.Base = Base;
@@ -29,26 +23,26 @@ namespace DbClasses
             this.Gender = gender;
         }
 
-        public static Name ToName(DataRow dataRow)
+        public static Name ToName(object _Base, object _SingularNominative, object _SingularGenitive, object _PluralNominative, object _PluralGenitive, object _gender)
         {
-            string Base = dataRow["Base"].ToString();
-            string SingularNominative = dataRow["SingularNominative"].ToString();
-            string SingularGenitive = dataRow["SingularGenitive"].ToString();
-            string PluralNominative = dataRow["PluralNominative"].ToString();
-            string PluralGenitive = dataRow["PluralGenitive"].ToString();
-            Gender gender = ToGender(dataRow["Gender"].ToString());
+            string Base = _Base.ToString();
+            string SingularNominative = _SingularNominative.ToString();
+            string SingularGenitive = _SingularGenitive.ToString();
+            string PluralNominative = _PluralNominative.ToString();
+            string PluralGenitive = _PluralGenitive.ToString();
+            Gender gender = ToGender(Convert.ToInt32(_gender));
             return new Name(Base, SingularNominative,  SingularGenitive,  PluralNominative, PluralGenitive, gender);
         }
 
-        private static Gender ToGender(string genderString)
+        private static Gender ToGender(int genderString)
         {
             switch (genderString)
             {
-                case "Masculine":
+                case 1:
                     return Gender.Masculine;
-                case "Feminine":
+                case 2:
                     return Gender.Feminine;
-                case "Neuter":
+                case 3:
                     return Gender.Neuter;
                 default: 
                     return Gender.None;

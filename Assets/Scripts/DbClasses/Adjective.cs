@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace DbClasses
 {
@@ -14,11 +15,6 @@ namespace DbClasses
         public string PluralNominative { get; set; }
         public string PluralGenitive { get; set; }
 
-        public Adjective()
-        {
-
-        }
-
         public Adjective(string Base, string SingularNominativeFeminine, string SingularGenitiveFeminine, string SingularNominativeMasculine, string SingularNominativeNeuter, string SingularGenitiveOther, string PluralNominative, string PluralGenitive)
         {
             this.Base = Base;
@@ -31,6 +27,19 @@ namespace DbClasses
             this.PluralGenitive = PluralGenitive;
         }
 
+        public static Adjective ToAdjective(object _Base, object _SingularNominativeFeminine, object _SingularGenitiveFeminine, object _SingularNominativeMasculine, object _SingularNominativeNeuter, object _SingularGenitiveOther, object _PluralNominative, object _PluralGenitive)
+        {
+            string Base = _Base.ToString();
+            string SingularNominativeFeminine = _SingularNominativeFeminine.ToString();
+            string SingularGenitiveFeminine = _SingularGenitiveFeminine.ToString();
+            string SingularNominativeMasculine = _SingularNominativeMasculine.ToString();
+            string SingularNominativeNeuter = _SingularNominativeNeuter.ToString();
+            string SingularGenitiveOther = _SingularGenitiveOther.ToString();
+            string PluralNominative = _PluralNominative.ToString();
+            string PluralGenitive = _PluralGenitive.ToString();
+            return new Adjective(Base, SingularNominativeFeminine, SingularGenitiveFeminine, SingularNominativeMasculine, SingularNominativeNeuter, SingularGenitiveOther, PluralNominative, PluralGenitive);
+        }
+
         private bool CheckTitle(int Title)
         {
             switch (Title)
@@ -38,7 +47,7 @@ namespace DbClasses
                 case -1:
                     return false;
                 case 0:
-                    if (new Random().Next(100) < 50) return true;
+                    if (new System.Random().Next(100) < 50) return true;
                     else return false;
                 case 1:
                     return true;
