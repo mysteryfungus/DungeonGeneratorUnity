@@ -156,7 +156,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b2b47f1b96e236498061919e62f1a4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameField: {fileID: 980601670}
+  dungeonNameField: {fileID: 980601670}
 --- !u!4 &96272219
 Transform:
   m_ObjectHideFlags: 0
