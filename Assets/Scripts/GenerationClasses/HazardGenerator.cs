@@ -1,13 +1,50 @@
 ﻿using DbClasses;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-/*
+using Mono.Data.Sqlite;
+using UnityEngine;
+
 namespace GenerationClasses
 {
     class HazardGenerator
     {
+        private string dbName;
+        private List<Hazard> hazards;
+        private int hazardsCount = 0;
+        
+        public HazardGenerator(string _dbName)
+        {
+            this.dbName = _dbName;
+            GetHazardsT();
+        }
+
+        private void GetHazardsT()
+        {
+            using (SqliteConnection connection = new SqliteConnection(dbName)) 
+            {
+                connection.Open();
+
+                using (SqliteCommand command = connection.CreateCommand()) 
+                {
+                    command.CommandText = "SELECT * FROM Hazards";
+
+                    using (SqliteDataReader reader = command.ExecuteReader()) 
+                    {
+                        hazards = new List<Hazard>();
+                        //сохраняем результат как List;
+                        while (reader.Read())
+                        {
+                            hazards.Add(Hazard.ToHazard(reader.GetValue(0), reader.GetValue(1), reader.GetValue(2), reader.GetValue(3),reader.GetValue(4),reader.GetValue(5),reader.GetValue(6)));
+                        }
+                        //выясняем, сколько всего записей в таблице "Names"
+                        hazardsCount = hazards.Count;
+                    }
+                }
+                connection.Close();
+            }
+            Debug.Log("Hazards read: " + hazardsCount);
+            Debug.Log("First hazard: " + hazards[0].Name);
+        }
+        /*
         private object db;
         private List<Hazard> hazards;
 
@@ -108,7 +145,6 @@ namespace GenerationClasses
                 return xpbudget;
             }
             
-        }
+        }*/
     }
 }
-*/

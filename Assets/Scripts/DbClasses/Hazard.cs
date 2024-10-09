@@ -27,6 +27,18 @@ namespace DbClasses
             Stealth = stealth;
         }
 
+        public static Hazard ToHazard(object _id, object _name, object _complexity, object _description, object _mechDescription, object _level, object _stealth)
+        {
+            int id = Convert.ToInt32(_id);
+            string name = _name.ToString();
+            string complexity = _complexity.ToString();
+            string description = _description.ToString();
+            string mechDescription = _mechDescription.ToString();
+            int level = Convert.ToInt32(_level);
+            string stealth = _stealth.ToString();
+            return new Hazard(id, name, complexity, description, mechDescription, level, stealth);
+        }
+
         public override string ToString()
         {
             return Name;

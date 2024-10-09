@@ -4,6 +4,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+namespace GenerationClasses
+{
+    
+    class ThreatGenerator
+    {
+        private string dbName;
+        private MonsterGenerator monsterGen;
+        private HazardGenerator hazardGen;
+        public ThreatGenerator(string _dbName)
+        {
+            this.dbName = _dbName;
+            this.monsterGen = new MonsterGenerator(_dbName);
+            this.hazardGen = new HazardGenerator(_dbName);
+        }
+
+    }
+}
 /*
 namespace GenerationClasses
 {

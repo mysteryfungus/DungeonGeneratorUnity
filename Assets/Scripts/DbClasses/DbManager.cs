@@ -11,19 +11,22 @@ namespace DbClasses
 class DBManager : MonoBehaviour
 {
     private string dbName = "URI=file:" + Application.dataPath + "/Dungeon.db";
-    [SerializeField] Text nameField;
+    [SerializeField] Text dungeonNameField;
     private NameGenerator nameGen;
+    private ThreatGenerator threatGen;
 
     void Start()
     {
-        InitGenerators();
-        if (CheckDB()) ChangeName(nameGen.GenerateName()); //при запуске один раз генерирует название, если существует дб
+        if (CheckDB()) {
+            InitGenerators();
+            ChangeName(nameGen.GenerateName()); //при запуске один раз генерирует название
+        }
     }
 
     void InitGenerators()
     {
         nameGen = new NameGenerator(dbName);
-        //threatGen (в нем уже monter + hazard)
+        threatGen = new ThreatGenerator(dbName);
     }
 
     bool CheckDB()
@@ -38,7 +41,7 @@ class DBManager : MonoBehaviour
 
     private void ChangeName(string newName)
     {
-        nameField.text = newName;
+        dungeonNameField.text = newName;
     }
 }
 }

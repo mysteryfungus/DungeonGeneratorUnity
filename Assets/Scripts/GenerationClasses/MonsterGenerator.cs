@@ -1,12 +1,52 @@
 ﻿using DbClasses;
-using System;
+using Mono.Data.Sqlite;
 using System.Collections.Generic;
-using System.Linq;
-/*
+using UnityEngine;
+
 namespace GenerationClasses
 {
     class MonsterGenerator
     {
+        private string dbName;
+        private List<Monster> monsters;
+        private int monstersCount = 0;
+        public MonsterGenerator(string _dbName)
+        {
+            this.dbName = _dbName;
+            GetMonstersT();
+        }
+
+        private void GetMonstersT()
+        {
+            using (SqliteConnection connection = new SqliteConnection(dbName)) 
+            {
+                connection.Open();
+
+                using (SqliteCommand command = connection.CreateCommand()) 
+                {
+                    command.CommandText = "SELECT * FROM Monsters";
+
+                    using (SqliteDataReader reader = command.ExecuteReader()) 
+                    {
+                        monsters = new List<Monster>();
+                        //сохраняем результат как List;
+                        while (reader.Read())
+                        {
+                            monsters.Add(Monster.ToMonster(reader.GetValue(0), reader.GetValue(1), reader.GetValue(2), reader.GetValue(3),reader.GetValue(4)));
+                        }
+                        //выясняем, сколько всего записей в таблице "Names"
+                        monstersCount = monsters.Count;
+                    }
+                }
+                connection.Close();
+            }
+
+            Debug.Log("Monsters read: " + monstersCount);
+            Debug.Log("First monster: " + monsters[0].Name);
+        }
+
+        
+        /*
         private ApplicationContext db;
         private List<Monster> monsters;
         public MonsterGenerator()
@@ -76,7 +116,6 @@ namespace GenerationClasses
                 if (party_level <= 2 && xpbudget <= 10) break;
             }
             return (monsters);
-        }
+        }*/
     }
 }
-*/
