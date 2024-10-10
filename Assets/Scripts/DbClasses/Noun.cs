@@ -1,12 +1,11 @@
-﻿
-using System;
-using System.Data;
+﻿using System;
+using UnityEngine;
 
 namespace DbClasses
 {
     class Noun
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public string Base { get; set; }
         public string SingularNominative { get; set; }
         public string SingularGenitive { get; set; }
@@ -60,7 +59,7 @@ namespace DbClasses
                 case -1:
                     return false;
                 case 0:
-                    if (new Random().Next(100) < 50) return true;
+                    if (new System.Random().Next(100) < 50) return true;
                     else return false;
                 case 1:
                     return true;
