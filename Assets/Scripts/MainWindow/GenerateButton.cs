@@ -1,32 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine;
+using UnityEngine.UIElements;
+using Zenject;
+
 
 /// <summary>
-/// Кнопка старта генерации. Будет ссылаться на поля. Отправлять данные полей в верификаторы. Запускать 
-/// генерацию, если все нормально
+/// Класс для запуска генерации. В OnClick запускается логика генерации, то есть там нужно работать с 
+/// классами генерации карты, монстров и остального - все, что зависит от параметров
 /// </summary>
-
-public class GenerateButton : MonoBehaviour, IButton
+public class GenerateButton : AButton
 {
-    [SerializeField] private Text _xMapSize;
-    [SerializeField] private Text _yMapSize;
-    [SerializeField] private Text _xRoomSize;
-    [SerializeField] private Text _yRoomSize;
+    [Inject(Id = "count-rooms")] private CustomInputField _countRooms;
+    [Inject(Id = "count-heros")] private CustomInputField _countHeros;
+    [Inject(Id = "max-size-rooms")] private CustomInputField _maxSizeRooms;
+    [Inject(Id = "min-size-rooms")] private CustomInputField _minSizeRooms;
+    [Inject(Id = "level-heros")] private CustomInputField _levelHeros;
 
-    /// и прочие параметры, которые будут добавляться...
-    public void OnClick()
+    [Inject] private InputFieldsVerificator _verificator;
+
+    [Inject(Id ="submit")]
+    public override void Construct(Button button)
     {
-        var mapVerificator = new MapSizeVerificator();
-        var roomVerificator = new RoomSizeVerificator();
+        _button = button;
 
-        if(mapVerificator.Check(_xMapSize.text) && mapVerificator.Check(_yMapSize.text))
-        {
-			if (roomVerificator.Check(_xRoomSize.text) && mapVerificator.Check(_yRoomSize.text))
-            {
-                EventBus.OnStartGeneration?.Invoke();
-            }
-		}
+        _button.clicked += OnClick;
+
+        Debug.Log($"{name} создан");
+    }
+
+    public override void OnClick()
+    {
+        Debug.Log("Generate!");
     }
 }
