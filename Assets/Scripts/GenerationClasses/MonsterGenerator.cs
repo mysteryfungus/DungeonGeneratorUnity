@@ -1,7 +1,8 @@
 ﻿using DbClasses;
 using Mono.Data.Sqlite;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
+using System;
 
 namespace GenerationClasses
 {
@@ -13,52 +14,8 @@ namespace GenerationClasses
         public MonsterGenerator(string _dbName)
         {
             this.dbName = _dbName;
-            GetMonstersT();
+            //GetMonstersTByLevel(1);
         }
-
-        private void GetMonstersT()
-        {
-            using (SqliteConnection connection = new SqliteConnection(dbName)) 
-            {
-                connection.Open();
-
-                using (SqliteCommand command = connection.CreateCommand()) 
-                {
-                    command.CommandText = "SELECT * FROM Monsters";
-
-                    using (SqliteDataReader reader = command.ExecuteReader()) 
-                    {
-                        monsters = new List<Monster>();
-                        //сохраняем результат как List;
-                        while (reader.Read())
-                        {
-                            monsters.Add(Monster.ToMonster(reader.GetValue(0), reader.GetValue(1), reader.GetValue(2), reader.GetValue(3),reader.GetValue(4)));
-                        }
-                        //выясняем, сколько всего записей в таблице "Names"
-                        monstersCount = monsters.Count;
-                    }
-                }
-                connection.Close();
-            }
-
-            Debug.Log("Monsters read: " + monstersCount);
-            Debug.Log("First monster: " + monsters[0].Name);
-        }
-
-        
-        /*
-        private ApplicationContext db;
-        private List<Monster> monsters;
-        public MonsterGenerator()
-        {
-
-        }
-
-        public MonsterGenerator(ApplicationContext _db)
-        {
-            this.db = _db;
-        }
-
         Monster monster;
         readonly Dictionary<int, int> expcostlist = new Dictionary<int, int>()
             {
@@ -104,8 +61,7 @@ namespace GenerationClasses
                 //Console.WriteLine($"Пытаемся достать челика с {monlvl}\n");
                 if (!monsters_by_lvl.ContainsKey(monlvl)) //Проверка, сохраняли ли список монстров этого уровня
                 {
-                    List<Monster> lvl_list = db.Monsters.Where(x => x.Level == monlvl).ToList(); //Сохраняем, если нет
-                    monsters_by_lvl[monlvl] = lvl_list;
+                    monsters_by_lvl[monlvl] = GetMonstersTByLevel(monlvl); //Сохраняем, если нет
                 }
                 int max_mon_amount = monsters_by_lvl[monlvl].Count; //Сколько всего монстров этого уровня?
                 monster = monsters_by_lvl[monlvl][rnd.Next(0, max_mon_amount)]; //Случайный монстр этого уровня
@@ -116,6 +72,30 @@ namespace GenerationClasses
                 if (party_level <= 2 && xpbudget <= 10) break;
             }
             return (monsters);
-        }*/
+        }
+        private List<Monster> GetMonstersTByLevel(int level)
+        {
+            using (SqliteConnection connection = new SqliteConnection(dbName)) 
+            {
+                connection.Open();
+
+                using (SqliteCommand command = connection.CreateCommand()) 
+                {
+                    command.CommandText = "SELECT * FROM Monsters WHERE Level = " + level.ToString();
+
+                    using (SqliteDataReader reader = command.ExecuteReader()) 
+                    {
+                        monsters = new List<Monster>();
+                        //сохраняем результат как List;
+                        while (reader.Read())
+                        {
+                            monsters.Add(Monster.ToMonster(reader.GetValue(0), reader.GetValue(1), reader.GetValue(2), reader.GetValue(3),reader.GetValue(4)));
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return monsters;
+        }
     }
 }

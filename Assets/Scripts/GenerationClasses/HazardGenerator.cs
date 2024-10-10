@@ -1,7 +1,6 @@
 ﻿using DbClasses;
 using System.Collections.Generic;
 using Mono.Data.Sqlite;
-using UnityEngine;
 
 namespace GenerationClasses
 {
@@ -14,18 +13,18 @@ namespace GenerationClasses
         public HazardGenerator(string _dbName)
         {
             this.dbName = _dbName;
-            GetHazardsT();
         }
 
-        private void GetHazardsT()
+        private void GetHazardsTByLevelComplexity(int level, int complexity)
         {
+            //complexity: 0 - Простая; 1 - Сложная
             using (SqliteConnection connection = new SqliteConnection(dbName)) 
             {
                 connection.Open();
 
                 using (SqliteCommand command = connection.CreateCommand()) 
                 {
-                    command.CommandText = "SELECT * FROM Hazards";
+                    command.CommandText = "SELECT * FROM Hazards WHERE Level = " + level;
 
                     using (SqliteDataReader reader = command.ExecuteReader()) 
                     {
@@ -41,8 +40,6 @@ namespace GenerationClasses
                 }
                 connection.Close();
             }
-            Debug.Log("Hazards read: " + hazardsCount);
-            Debug.Log("First hazard: " + hazards[0].Name);
         }
         /*
         private object db;
