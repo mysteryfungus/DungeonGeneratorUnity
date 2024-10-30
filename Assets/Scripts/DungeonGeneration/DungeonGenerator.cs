@@ -1,0 +1,199 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using JetBrains.Annotations;
+using UnityEditor;
+using UnityEditor.EditorTools;
+using UnityEngine;
+
+public class DungeonGenerator : MonoBehaviour
+{
+    [SerializeField] public int roomCount = 10;
+    [SerializeField] public  Vector2 minRoomSize = new Vector2(6, 6);
+    [SerializeField] public Vector2 maxRoomSize = new Vector2(21, 21);
+    [SerializeField] public Vector2 dungeonSize = new Vector2(100, 100);
+    [SerializeField] public float minRoomSeparation = 3f;
+    [SerializeField] public float corridorOffset = -0.25f;
+    [SerializeField] public GameObject roomPrefab;    // Префаб для комнаты
+    [SerializeField] public GameObject corridorPrefab; // Префаб для коридора
+    [SerializeField] private bool CorrectCamera;
+    [SerializeField, ButtonInvoke(nameof(RegenerateDungeon))] private bool regenerateDungeonInspectorButton;
+
+    private List<Room> rooms = new List<Room>();
+    private List<GameObject> dungeonObjects = new List<GameObject>();
+    private HashSet<(Room, Room)> connectedRooms = new HashSet<(Room, Room)>();
+
+    public delegate void Regeneration(DungeonGenerator dungeonGenerator);
+    public static event Regeneration OnRegeneration;
+
+    void Start()
+    {
+        RegenerateDungeon();
+    }
+
+    public void RegenerateDungeon()
+    {
+        ClearDungeon();
+        GenerateDungeon();
+        if(CorrectCamera) OnRegeneration?.Invoke(this);
+    }
+
+    void ClearDungeon()
+    {
+        rooms.Clear();
+        connectedRooms.Clear();
+
+        foreach (GameObject obj in dungeonObjects)
+        {
+            Destroy(obj);
+        }
+        dungeonObjects.Clear();
+    }
+
+    void GenerateDungeon()
+    {
+        PlaceRooms();
+        //SeparateRooms();
+        ConnectRooms();
+    }
+
+    void PlaceRooms()
+    {
+        int attempts = 0;
+        while (rooms.Count < roomCount && attempts < roomCount * 10)
+        {
+            Vector2 roomSize = new Vector2(
+                Random.Range(minRoomSize.x, maxRoomSize.x),
+                Random.Range(minRoomSize.y, maxRoomSize.y)
+            );
+
+            Vector2 roomPosition = new Vector2(
+                Random.Range(0, dungeonSize.x - roomSize.x),
+                Random.Range(0, dungeonSize.y - roomSize.y)
+            );
+
+            Room newRoom = new Room(roomPosition, roomSize);
+
+            bool intersects = false;
+            foreach (Room room in rooms)
+            {
+                Bounds roomBounds = new Bounds(room.Position + room.Size / 2, room.Size);
+                Bounds newRoomBounds = new Bounds(newRoom.Position + newRoom.Size / 2, newRoom.Size);
+
+                float _separation = Vector2.Distance(newRoom.GetCenter(), room.GetCenter());
+                if (roomBounds.Intersects(newRoomBounds) || _separation < minRoomSeparation)
+                {
+                    intersects = true;
+                    break;
+                }
+            }
+
+            if (!intersects)
+            {
+                rooms.Add(newRoom);
+                CreateRoom(newRoom);
+            }
+
+            attempts++;
+        }
+    }
+
+    /*
+    void SeparateRooms()
+    {
+        bool roomsMoved;
+        do
+        {
+            roomsMoved = false;
+            for (int i = 0; i < rooms.Count; i++)
+            {
+                for (int j = i + 1; j < rooms.Count; j++)
+                {
+                    if (rooms[i].Intersects(rooms[j]))
+                    {
+                        Vector2 direction = (rooms[i].Position - rooms[j].Position).normalized;
+                        rooms[i].Position += direction * 0.5f;
+                        rooms[j].Position -= direction * 0.5f;
+                        roomsMoved = true;
+                    }
+                }
+            }
+        } while (roomsMoved);
+    }
+    */
+
+    void ConnectRooms()
+    {
+        rooms.Sort((a, b) => Vector2.Distance(Vector2.zero, a.GetCenter()).CompareTo(Vector2.Distance(Vector2.zero, b.GetCenter())));
+
+        for (int i = 0; i < rooms.Count - 1; i++)
+        {
+            Room roomA = rooms[i];
+            Room closestRoom = null;
+            float minDistance = float.MaxValue;
+
+            for (int j = i + 1; j < rooms.Count; j++)
+            {
+                Room roomB = rooms[j];
+                float distance = Vector2.Distance(roomA.GetCenter(), roomB.GetCenter());
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestRoom = roomB;
+                }
+            }
+
+            if (closestRoom != null && !connectedRooms.Contains((roomA, closestRoom)) && !connectedRooms.Contains((closestRoom, roomA)))
+            {
+                connectedRooms.Add((roomA, closestRoom));
+                CreateCorridor(roomA, closestRoom);
+            }
+        }
+    }
+
+    void CreateRoom(Room room)
+    {
+        GameObject roomObj = Instantiate(roomPrefab, room.Position + room.Size / 2, Quaternion.identity, this.transform);
+        roomObj.transform.localScale = new Vector3(room.Size.x, room.Size.y, 1);
+        dungeonObjects.Add(roomObj);
+    }
+
+    void CreateCorridor(Room roomA, Room roomB)
+    {
+        Vector2 start = roomA.GetCenter();
+        Vector2 end = roomB.GetCenter();
+
+        Vector2 startPoint = start;
+        Vector2 endPoint = end;
+
+        if (Mathf.Abs(startPoint.x - endPoint.x) > Mathf.Abs(startPoint.y - endPoint.y))
+        {
+            CreateCorridorSegment(startPoint, new Vector2(endPoint.x, startPoint.y));
+            CreateCorridorSegment(new Vector2(endPoint.x, startPoint.y), endPoint);
+        }
+        else
+        {
+            CreateCorridorSegment(startPoint, new Vector2(startPoint.x, endPoint.y));
+            CreateCorridorSegment(new Vector2(startPoint.x, endPoint.y), endPoint);
+        }
+    }
+
+    void CreateCorridorSegment(Vector2 start, Vector2 end)
+    {
+        Vector2 corridorPosition = (start + end) / 2;
+        Vector2 corridorSize = new Vector2(Mathf.Abs(start.x - end.x), Mathf.Abs(start.y - end.y));
+
+        if (corridorSize.x == 0) corridorSize.x = 1;
+        if (corridorSize.y == 0) corridorSize.y = 1;
+
+        
+        GameObject corridorObj = Instantiate(corridorPrefab, new Vector3(corridorPosition.x, corridorPosition.y, corridorOffset), Quaternion.identity, this.transform);
+        corridorObj.transform.localScale = new Vector3(corridorSize.x, corridorSize.y, 1);
+        dungeonObjects.Add(corridorObj);
+    }
+
+    private string GetDebuggerDisplay()
+    {
+        return ToString();
+    }
+}
