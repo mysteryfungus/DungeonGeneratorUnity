@@ -13,11 +13,10 @@ public class DungeonGenerator : MonoBehaviour
     [SerializeField] public Vector2 maxRoomSize = new Vector2(21, 21);
     [SerializeField] public Vector2 dungeonSize = new Vector2(100, 100);
     [SerializeField] public float minRoomSeparation = 3f;
-    [SerializeField] public float corridorOffset = -0.25f;
     [SerializeField] public GameObject roomPrefab;    // Префаб для комнаты
     [SerializeField] public GameObject corridorPrefab; // Префаб для коридора
     [SerializeField] private bool CorrectCamera;
-    [SerializeField, ButtonInvoke(nameof(RegenerateDungeon))] private bool regenerateDungeonInspectorButton;
+    [SerializeField, ButtonInvoke(nameof(RegenerateDungeon))] private bool regenerateDungeon;
 
     private List<Room> rooms = new List<Room>();
     private List<GameObject> dungeonObjects = new List<GameObject>();
@@ -53,7 +52,7 @@ public class DungeonGenerator : MonoBehaviour
     void GenerateDungeon()
     {
         PlaceRooms();
-        //SeparateRooms();
+        SeparateRooms();
         ConnectRooms();
     }
 
@@ -63,13 +62,13 @@ public class DungeonGenerator : MonoBehaviour
         while (rooms.Count < roomCount && attempts < roomCount * 10)
         {
             Vector2 roomSize = new Vector2(
-                Random.Range(minRoomSize.x, maxRoomSize.x),
-                Random.Range(minRoomSize.y, maxRoomSize.y)
+                (int)Random.Range(minRoomSize.x, maxRoomSize.x),
+                (int)Random.Range(minRoomSize.y, maxRoomSize.y)
             );
 
             Vector2 roomPosition = new Vector2(
-                Random.Range(0, dungeonSize.x - roomSize.x),
-                Random.Range(0, dungeonSize.y - roomSize.y)
+                (int)Random.Range(0, dungeonSize.x - roomSize.x),
+                (int)Random.Range(0, dungeonSize.y - roomSize.y)
             );
 
             Room newRoom = new Room(roomPosition, roomSize);
@@ -98,7 +97,6 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-    /*
     void SeparateRooms()
     {
         bool roomsMoved;
@@ -109,7 +107,8 @@ public class DungeonGenerator : MonoBehaviour
             {
                 for (int j = i + 1; j < rooms.Count; j++)
                 {
-                    if (rooms[i].Intersects(rooms[j]))
+                    float _separation = Vector2.Distance(rooms[i].GetCenter(), rooms[j].GetCenter());
+                    if (rooms[i].Intersects(rooms[j]) || _separation < minRoomSeparation)
                     {
                         Vector2 direction = (rooms[i].Position - rooms[j].Position).normalized;
                         rooms[i].Position += direction * 0.5f;
@@ -120,7 +119,6 @@ public class DungeonGenerator : MonoBehaviour
             }
         } while (roomsMoved);
     }
-    */
 
     void ConnectRooms()
     {
@@ -187,7 +185,7 @@ public class DungeonGenerator : MonoBehaviour
         if (corridorSize.y == 0) corridorSize.y = 1;
 
         
-        GameObject corridorObj = Instantiate(corridorPrefab, new Vector3(corridorPosition.x, corridorPosition.y, corridorOffset), Quaternion.identity, this.transform);
+        GameObject corridorObj = Instantiate(corridorPrefab, corridorPosition, Quaternion.identity, this.transform);
         corridorObj.transform.localScale = new Vector3(corridorSize.x, corridorSize.y, 1);
         dungeonObjects.Add(corridorObj);
     }
