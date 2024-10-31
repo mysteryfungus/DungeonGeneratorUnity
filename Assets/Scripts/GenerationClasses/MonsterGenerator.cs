@@ -1,4 +1,4 @@
-﻿using DbClasses;
+using DbClasses;
 using Mono.Data.Sqlite;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,6 @@ namespace GenerationClasses
         public MonsterGenerator(string _dbName)
         {
             this.dbName = _dbName;
-            //GetMonstersTByLevel(1);
         }
         Monster monster;
         readonly Dictionary<int, int> expcostlist = new Dictionary<int, int>()
@@ -71,10 +70,11 @@ namespace GenerationClasses
                 //MonsterOutput.Text += $"{monster} / {monster.Level} \n";
                 if (party_level <= 2 && xpbudget <= 10) break;
             }
-            return (monsters);
+            return monsters;
         }
         private List<Monster> GetMonstersTByLevel(int level)
         {
+            List<Monster> monsterList = new List<Monster>();
             using (SqliteConnection connection = new SqliteConnection(dbName)) 
             {
                 connection.Open();
@@ -85,17 +85,15 @@ namespace GenerationClasses
 
                     using (SqliteDataReader reader = command.ExecuteReader()) 
                     {
-                        monsters = new List<Monster>();
-                        //сохраняем результат как List;
                         while (reader.Read())
                         {
-                            monsters.Add(Monster.ToMonster(reader.GetValue(0), reader.GetValue(1), reader.GetValue(2), reader.GetValue(3),reader.GetValue(4)));
+                            monsterList.Add(Monster.ToMonster(reader.GetValue(0), reader.GetValue(1), reader.GetValue(2), reader.GetValue(3),reader.GetValue(4)));
                         }
                     }
                 }
                 connection.Close();
             }
-            return monsters;
+            return monsterList;
         }
     }
 }

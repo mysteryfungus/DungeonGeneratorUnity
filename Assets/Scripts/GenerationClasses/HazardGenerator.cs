@@ -1,6 +1,8 @@
 ﻿using DbClasses;
 using System.Collections.Generic;
 using Mono.Data.Sqlite;
+using System;
+using System.Linq;
 
 namespace GenerationClasses
 {
@@ -15,8 +17,9 @@ namespace GenerationClasses
             this.dbName = _dbName;
         }
 
-        private void GetHazardsTByLevelComplexity(int level, int complexity)
+        private List<Hazard> GetHazardsTByLevelComplexity(int level, int complexity)
         {
+            List<Hazard> hazardList = new List<Hazard>();
             //complexity: 0 - Простая; 1 - Сложная
             using (SqliteConnection connection = new SqliteConnection(dbName)) 
             {
@@ -24,15 +27,14 @@ namespace GenerationClasses
 
                 using (SqliteCommand command = connection.CreateCommand()) 
                 {
-                    command.CommandText = "SELECT * FROM Hazards WHERE Level = " + level;
+                    command.CommandText = "SELECT * FROM Hazards WHERE Level = " + level + " AND Complexity = " + complexity;
 
                     using (SqliteDataReader reader = command.ExecuteReader()) 
                     {
-                        hazards = new List<Hazard>();
                         //сохраняем результат как List;
                         while (reader.Read())
                         {
-                            hazards.Add(Hazard.ToHazard(reader.GetValue(0), reader.GetValue(1), reader.GetValue(2), reader.GetValue(3),reader.GetValue(4),reader.GetValue(5),reader.GetValue(6)));
+                            hazardList.Add(Hazard.ToHazard(reader.GetValue(0), reader.GetValue(1), reader.GetValue(2), reader.GetValue(3),reader.GetValue(4),reader.GetValue(5),reader.GetValue(6)));
                         }
                         //выясняем, сколько всего записей в таблице "Names"
                         hazardsCount = hazards.Count;
@@ -40,10 +42,8 @@ namespace GenerationClasses
                 }
                 connection.Close();
             }
+            return hazardList;
         }
-        /*
-        private object db;
-        private List<Hazard> hazards;
 
         readonly Dictionary<int, int> simpleExpCostList = new Dictionary<int, int>()
             {
@@ -71,15 +71,6 @@ namespace GenerationClasses
                 {160, 4 }
             };
 
-        public HazardGenerator()
-        {
-
-        }
-
-        public HazardGenerator(ApplicationContext _db)
-        {
-            this.db = _db;
-        }
         Dictionary<int, List<Hazard>> simple_hazards_by_lvl = new Dictionary<int, List<Hazard>>();
         Dictionary<int, List<Hazard>> complex_hazards_by_lvl = new Dictionary<int, List<Hazard>>();
         Hazard hazard;
@@ -128,20 +119,20 @@ namespace GenerationClasses
 
                 int hazlvl = party_level + simpleExpCostList.ElementAt(hazcostindex).Value; // лвл исходя из уровня пати
                                                                                             //Console.WriteLine($"Пытаемся достать челика с {monlvl}\n");
-                if (!simple_hazards_by_lvl.ContainsKey(hazlvl)) //Проверка, сохраняли ли список монстров этого уровня
-                {
-                    List<Hazard> lvl_list = db.Hazards.Where(x => x.Level == hazlvl && x.Complexity == "Простая").ToList(); //Сохраняем, если нет
+                if (!simple_hazards_by_lvl.ContainsKey(hazlvl)) //Проверка, сохраняли ли список ловушек этого уровня
+                {//Сохраняем, если нет
+                    List<Hazard> lvl_list = GetHazardsTByLevelComplexity(hazlvl, 0);
                     simple_hazards_by_lvl[hazlvl] = lvl_list;
                 }
-                int max_mon_amount = simple_hazards_by_lvl[hazlvl].Count; //Сколько всего монстров этого уровня?
-                hazard = simple_hazards_by_lvl[hazlvl][rnd.Next(0, max_mon_amount)]; //Случайный монстр этого уровня
+                int max_mon_amount = simple_hazards_by_lvl[hazlvl].Count; //Сколько всего ловушек этого уровня?
+                hazard = simple_hazards_by_lvl[hazlvl][rnd.Next(0, max_mon_amount)]; //Случайная ловушка этого уровня
                 hazards.Add(hazard);
-                xpbudget -= hazcost; //Потратили опыт на этого монстра.
+                xpbudget -= hazcost; //Потратили опыт на эту ловушку.
                 Console.WriteLine($"Сгенерировали ловушку: {hazard.Name} / {hazard.Level}; Осталось опыта на ловушки: {xpbudget}");
 
                 return xpbudget;
             }
             
-        }*/
+        }
     }
 }

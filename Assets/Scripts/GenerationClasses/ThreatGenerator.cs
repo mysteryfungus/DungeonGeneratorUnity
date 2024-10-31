@@ -13,46 +13,12 @@ namespace GenerationClasses
         private string dbName;
         private MonsterGenerator monsterGen;
         private HazardGenerator hazardGen;
-        public ThreatGenerator(string _dbName)
-        {
-            this.dbName = _dbName;
-            this.monsterGen = new MonsterGenerator(_dbName);
-            this.hazardGen = new HazardGenerator(_dbName);
-        }
-
-    }
-}
-/*
-namespace GenerationClasses
-{
-    class ThreatGenerator
-    {
-        private ApplicationContext db;
-        private MonsterGenerator monsterGenerator;
-        private HazardGenerator hazardGenerator;
         private int party_member_amount;
         private int party_level;
         private int room_amount;
         private List<Tuple<int, List<Monster>, List<Hazard>>> room_contents = new List<Tuple<int, List<Monster>, List<Hazard>>>();
         private List<Monster> temp_monsters;
-        private List<Hazard> temp_hazards = new List<Hazard>();
-        /*
-         * 1, List<Monster>, List<Hazard>
-         * 2, List<Monster>, List<Hazard>
-         * 
-         *'/
-        public ThreatGenerator()
-        {
-
-        }
-
-        public ThreatGenerator(ApplicationContext _db)
-        {
-            this.db = _db;
-            monsterGenerator = new MonsterGenerator(db);
-            hazardGenerator = new HazardGenerator(db);
-        }
-
+        private List<Hazard> temp_hazards;
         readonly Dictionary<string, int> xb_by_difficulty = new Dictionary<string, int>()
             {
                 {"Trivial", 40 },
@@ -70,11 +36,13 @@ namespace GenerationClasses
                 {"Extreme", 40 }
             };
         
-        public void Init()
+        public ThreatGenerator(string _dbName)
         {
-            //Инициализация себя и MonsterGenerator + HazardGenerator
+            this.dbName = _dbName;
+            this.monsterGen = new MonsterGenerator(_dbName);
+            this.hazardGen = new HazardGenerator(_dbName);
         }
-
+        //BuildEncounter генерирует для всех комнат сразу
         public void BuildEncounter(int party_member_amount, int party_level, int room_amount)
         {
             Random random = new Random();
@@ -94,6 +62,7 @@ namespace GenerationClasses
             System.Console.Write($"Сгенерировано приколов: {room_contents.Count}\n");
             //SaveToFile(room_contents);
         }
+        //случайно выбрать сложность, чаще всего выпадает средняя
         public string RandomDifficulty(Random random)
         {
             double randomNumber = random.NextDouble();
@@ -103,7 +72,7 @@ namespace GenerationClasses
             else if (randomNumber < 0.93) return "Severe"; //15%
             else return "Extreme"; //7%
         }
-
+        //BuildRoom строит одну комнату
         public void BuildRoom(string difficulty)
         {
             int xpbudget = xb_by_difficulty[difficulty];
@@ -119,16 +88,16 @@ namespace GenerationClasses
              * monsterGenerator.BuildCombat((int)(xpbudget*0.9))
              * hazardGenerator.BuildHazard((int)(xpbudget*0.1))
              * }
-             * else monsterGenerator.BuildCombat(xpbudget)*'/
+             * else monsterGenerator.BuildCombat(xpbudget)*/
             if ((int)(xpbudget * 0.1) >= 4)
             {
-                temp_monsters = monsterGenerator.BuildCombat((int)(xpbudget * 0.9), party_level);
-                temp_hazards = hazardGenerator.BuildHazard((int)(xpbudget * 0.1), party_level);
+                temp_monsters = monsterGen.BuildCombat((int)(xpbudget * 0.9), party_level);
+                temp_hazards = hazardGen.BuildHazard((int)(xpbudget * 0.1), party_level);
             } else
             {
-                temp_monsters = monsterGenerator.BuildCombat(xpbudget, party_level);
+                temp_monsters = monsterGen.BuildCombat(xpbudget, party_level);
             }
         }
+
     }
 }
-*/
