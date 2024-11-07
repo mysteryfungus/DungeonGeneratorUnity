@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace DbClasses
 {
-    class Adjective
+    class Adjective : DbClass
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public string Base { get; set; }
         public string SingularNominativeFeminine { get; set; }
         public string SingularGenitiveFeminine { get; set; }
@@ -27,16 +27,16 @@ namespace DbClasses
             this.PluralGenitive = PluralGenitive;
         }
 
-        public static Adjective ToAdjective(object _Base, object _SingularNominativeFeminine, object _SingularGenitiveFeminine, object _SingularNominativeMasculine, object _SingularNominativeNeuter, object _SingularGenitiveOther, object _PluralNominative, object _PluralGenitive)
+        public static Adjective ToAdjective(object[] values)
         {
-            string Base = _Base.ToString();
-            string SingularNominativeFeminine = _SingularNominativeFeminine.ToString();
-            string SingularGenitiveFeminine = _SingularGenitiveFeminine.ToString();
-            string SingularNominativeMasculine = _SingularNominativeMasculine.ToString();
-            string SingularNominativeNeuter = _SingularNominativeNeuter.ToString();
-            string SingularGenitiveOther = _SingularGenitiveOther.ToString();
-            string PluralNominative = _PluralNominative.ToString();
-            string PluralGenitive = _PluralGenitive.ToString();
+            string Base = values[1].ToString();
+            string SingularNominativeFeminine = DbClass.StringOrNull(values[2]);
+            string SingularGenitiveFeminine = DbClass.StringOrNull(values[3]);
+            string SingularNominativeMasculine = DbClass.StringOrNull(values[4]);
+            string SingularNominativeNeuter = DbClass.StringOrNull(values[5]);
+            string SingularGenitiveOther = DbClass.StringOrNull(values[6]);
+            string PluralNominative = DbClass.StringOrNull(values[7]);
+            string PluralGenitive = DbClass.StringOrNull(values[8]);
             return new Adjective(Base, SingularNominativeFeminine, SingularGenitiveFeminine, SingularNominativeMasculine, SingularNominativeNeuter, SingularGenitiveOther, PluralNominative, PluralGenitive);
         }
 

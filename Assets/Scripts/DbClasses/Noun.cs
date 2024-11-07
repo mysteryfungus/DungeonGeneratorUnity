@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace DbClasses
 {
-    class Noun
+    class Noun : DbClass
     {
         //public int Id { get; set; }
         public string Base { get; set; }
@@ -25,15 +25,15 @@ namespace DbClasses
             this.Title = title;
         }
 
-        public static Noun ToNoun(object _Base, object _SingularNominative, object _SingularGenitive, object _PluralNominative, object _PluralGenitive, object _gender, object _title)
+        public static Noun ToNoun(object[] values)
         {
-            string Base = _Base.ToString();
-            string SingularNominative = _SingularNominative.ToString();
-            string SingularGenitive = _SingularGenitive.ToString();
-            string PluralNominative = _PluralNominative.ToString();
-            string PluralGenitive = _PluralGenitive.ToString();
-            Gender gender = ToGender(Convert.ToInt32(_gender));
-            int title = Convert.ToInt32(_title);
+            string Base = values[1].ToString();
+            string SingularNominative = DbClass.StringOrNull(values[2]);
+            string SingularGenitive = DbClass.StringOrNull(values[3]);
+            string PluralNominative = DbClass.StringOrNull(values[4]);
+            string PluralGenitive = DbClass.StringOrNull(values[5]);
+            Gender gender = ToGender(Convert.ToInt32(values[6]));
+            int title = Convert.ToInt32(values[7]);
             return new Noun(Base, SingularNominative,  SingularGenitive,  PluralNominative, PluralGenitive, gender, title);
         }
 

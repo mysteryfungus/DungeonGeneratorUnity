@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DbClasses
 {
-    internal class Hazard
+    class Hazard : DbClass
     {
         public int id {  get; set; }
         public string Name { get; set; }
@@ -27,15 +27,15 @@ namespace DbClasses
             Stealth = stealth;
         }
 
-        public static Hazard ToHazard(object _id, object _name, object _complexity, object _description, object _mechDescription, object _level, object _stealth)
+        public static Hazard ToHazard(object[] values)
         {
-            int id = Convert.ToInt32(_id);
-            string name = _name.ToString();
-            string complexity = _complexity.ToString();
-            string description = _description.ToString();
-            string mechDescription = _mechDescription.ToString();
-            int level = Convert.ToInt32(_level);
-            string stealth = _stealth.ToString();
+            int id = Convert.ToInt32(values[0]);
+            string name = values[1].ToString();
+            string complexity = values[2].ToString();
+            string description = values[3].ToString();
+            string mechDescription = values[4].ToString();
+            int level = Convert.ToInt32(values[5]);
+            string stealth = values[6].ToString();
             return new Hazard(id, name, complexity, description, mechDescription, level, stealth);
         }
 

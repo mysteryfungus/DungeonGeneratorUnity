@@ -20,6 +20,7 @@ class DBManager : MonoBehaviour
         if (CheckDB()) {
             InitGenerators();
             ChangeName(nameGen.GenerateName()); //при запуске один раз генерирует название
+            threatGen.BuildEncounter(5, 3, 1);
         }
     }
 

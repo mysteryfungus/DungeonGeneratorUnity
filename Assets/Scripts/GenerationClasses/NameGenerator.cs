@@ -4,9 +4,8 @@ using System.Collections.Generic;
 
 namespace GenerationClasses
 {
-    class NameGenerator
+    class NameGenerator : ObjectGenerator
     {
-        private string dbName;
         readonly System.Random rnd = new System.Random();
         int nameRowsCount = 0;
         int nounRowsCount = 0;
@@ -61,81 +60,26 @@ namespace GenerationClasses
 
         private void GetNamesT()
         {
-            using (SqliteConnection connection = new SqliteConnection(dbName)) 
-            {
-                connection.Open();
-
-                using (SqliteCommand command = connection.CreateCommand()) 
-                {
-                    command.CommandText = "SELECT * FROM Names";
-
-                    using (SqliteDataReader reader = command.ExecuteReader()) 
-                    {
-                        names = new List<Name>();
-                        //сохраняем результат как List;
-                        while (reader.Read())
-                        {
-                            names.Add(Name.ToName(reader.GetValue(1), reader.GetValue(2), reader.GetValue(3), reader.GetValue(4),reader.GetValue(5),reader.GetValue(6)));
-                        }
-                        //выясняем, сколько всего записей в таблице "Names"
-                        nameRowsCount = names.Count;
-                    }
-                }
-                connection.Close();
-            } 
+            names = GetObjectsByQuery(
+                "SELECT * FROM Names",
+                Name.ToName
+            );
         }
 
         private void GetNounsT()
         {
-            using (SqliteConnection connection = new SqliteConnection(dbName)) 
-            {
-                connection.Open();
-
-                using (SqliteCommand command = connection.CreateCommand()) 
-                {
-                    command.CommandText = "SELECT * FROM Nouns";
-
-                    using (SqliteDataReader reader = command.ExecuteReader()) 
-                    {
-                        nouns = new List<Noun>();
-                        //сохраняем результат;
-                        while (reader.Read())
-                        {
-                            nouns.Add(Noun.ToNoun(reader.GetValue(1), reader.GetValue(2), reader.GetValue(3), reader.GetValue(4),reader.GetValue(5),reader.GetValue(6),reader.GetValue(7)));
-                        }
-                        //выясняем, сколько всего записей в таблице "Nouns"
-                        nounRowsCount = nouns.Count;
-                        
-                    }
-                }
-                connection.Close();
-            } 
+            nouns = GetObjectsByQuery(
+                "SELECT * FROM Nouns",
+                Noun.ToNoun
+            );
         }
 
         private void GetAdjT()
         {
-            using (SqliteConnection connection = new SqliteConnection(dbName)) 
-            {
-                connection.Open();
-
-                using (SqliteCommand command = connection.CreateCommand()) 
-                {
-                    command.CommandText = "SELECT * FROM Adjectives";
-
-                    using (SqliteDataReader reader = command.ExecuteReader()) 
-                    {
-                        adjectives = new List<Adjective>();
-                        //сохраняем результат;
-                        while (reader.Read())
-                        {
-                            adjectives.Add(Adjective.ToAdjective(reader.GetValue(1), reader.GetValue(2), reader.GetValue(3), reader.GetValue(4),reader.GetValue(5),reader.GetValue(6),reader.GetValue(7), reader.GetValue(8)));
-                        }
-                        //выясняем, сколько всего записей в таблице "Adjectives"
-                        adjRowsCount = adjectives.Count;
-                    }
-                }
-                connection.Close();
-            } 
+            adjectives = GetObjectsByQuery(
+                "SELECT * FROM Adjectives",
+                Adjective.ToAdjective
+            );
         }
 
         private int RandomNameType()

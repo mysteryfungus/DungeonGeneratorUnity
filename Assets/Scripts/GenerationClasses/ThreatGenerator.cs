@@ -1,16 +1,14 @@
 ﻿using DbClasses;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace GenerationClasses
 {
     
-    class ThreatGenerator
+    class ThreatGenerator : ObjectGenerator
     {
-        private string dbName;
         private MonsterGenerator monsterGen;
         private HazardGenerator hazardGen;
         private int party_member_amount;
@@ -45,7 +43,7 @@ namespace GenerationClasses
         //BuildEncounter генерирует для всех комнат сразу
         public void BuildEncounter(int party_member_amount, int party_level, int room_amount)
         {
-            Random random = new Random();
+            System.Random random = new System.Random();
             this.party_member_amount = party_member_amount;
             this.party_level = party_level;
             this.room_amount = room_amount;
@@ -54,16 +52,26 @@ namespace GenerationClasses
             for (int i  = 1; i <= room_amount; i++)
             {
                 String difficulty = RandomDifficulty(random);
-                System.Console.Write($"Комната #{i} Сложность: {difficulty}\n");
+                Debug.Log($"Комната #{i} Сложность: {difficulty}\n");
                 BuildRoom(difficulty);
                 room_contents.Add(Tuple.Create(i, temp_monsters, temp_hazards));
-                System.Console.Write($"МОНСТРОВ: {temp_monsters.Count}; ЛОВУШЕК: {temp_hazards.Count}\n\n");
+                Debug.Log($"МОНСТРОВ: {temp_monsters.Count}; ЛОВУШЕК: {temp_hazards.Count}\n\n");
+                string tempString = "";
+                for (int j = 0; j < temp_monsters.Count; j++) {
+                    if (j == temp_monsters.Count - 1) tempString+=temp_monsters[j].Name + " [" + temp_monsters[j].Level.ToString() + "].";
+                    else tempString+=temp_monsters[j].Name + " [" + temp_monsters[j].Level.ToString() + "], ";
+                }
+                tempString += "\n";
+                for (int j = 0; j < temp_hazards.Count; j++) {
+                    if (j == temp_hazards.Count - 1) tempString+=temp_hazards[j].Name + " [" + temp_hazards[j].Level.ToString() + "].";
+                    else tempString+=temp_hazards[j].Name + " [" + temp_hazards[j].Level.ToString() + "], ";
+                    };
+                Debug.Log(tempString);
             }
-            System.Console.Write($"Сгенерировано приколов: {room_contents.Count}\n");
             //SaveToFile(room_contents);
         }
         //случайно выбрать сложность, чаще всего выпадает средняя
-        public string RandomDifficulty(Random random)
+        public string RandomDifficulty(System.Random random)
         {
             double randomNumber = random.NextDouble();
             if (randomNumber < 0.1) return "Trivial"; //10%

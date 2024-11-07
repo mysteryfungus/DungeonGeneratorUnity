@@ -1,11 +1,12 @@
 ﻿using System;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace DbClasses
 {
-    class Name
+    class Name : DbClass
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
         public string Base { get; set; }
         public string SingularNominative { get; set; }
         public string SingularGenitive { get; set; }
@@ -23,14 +24,14 @@ namespace DbClasses
             this.Gender = gender;
         }
 
-        public static Name ToName(object _Base, object _SingularNominative, object _SingularGenitive, object _PluralNominative, object _PluralGenitive, object _gender)
+        public static Name ToName(object[] values)
         {
-            string Base = _Base.ToString();
-            string SingularNominative = _SingularNominative.ToString();
-            string SingularGenitive = _SingularGenitive.ToString();
-            string PluralNominative = _PluralNominative.ToString();
-            string PluralGenitive = _PluralGenitive.ToString();
-            Gender gender = ToGender(Convert.ToInt32(_gender));
+            string Base = values[1].ToString();
+            string SingularNominative = DbClass.StringOrNull(values[2]);
+            string SingularGenitive = DbClass.StringOrNull(values[3]);
+            string PluralNominative = DbClass.StringOrNull(values[4]);
+            string PluralGenitive = DbClass.StringOrNull(values[5]);
+            Gender gender = ToGender(Convert.ToInt32(values[6]));
             return new Name(Base, SingularNominative,  SingularGenitive,  PluralNominative, PluralGenitive, gender);
         }
 

@@ -6,11 +6,9 @@ using System;
 
 namespace GenerationClasses
 {
-    class MonsterGenerator
+    class MonsterGenerator : ObjectGenerator
     {
-        private string dbName;
         private List<Monster> monsters;
-        private int monstersCount = 0;
         public MonsterGenerator(string _dbName)
         {
             this.dbName = _dbName;
@@ -72,28 +70,13 @@ namespace GenerationClasses
             }
             return monsters;
         }
+
         private List<Monster> GetMonstersTByLevel(int level)
         {
-            List<Monster> monsterList = new List<Monster>();
-            using (SqliteConnection connection = new SqliteConnection(dbName)) 
-            {
-                connection.Open();
-
-                using (SqliteCommand command = connection.CreateCommand()) 
-                {
-                    command.CommandText = "SELECT * FROM Monsters WHERE Level = " + level.ToString();
-
-                    using (SqliteDataReader reader = command.ExecuteReader()) 
-                    {
-                        while (reader.Read())
-                        {
-                            monsterList.Add(Monster.ToMonster(reader.GetValue(0), reader.GetValue(1), reader.GetValue(2), reader.GetValue(3),reader.GetValue(4)));
-                        }
-                    }
-                }
-                connection.Close();
-            }
-            return monsterList;
+            return GetObjectsByQuery(
+                "SELECT * FROM Monsters WHERE Level = " + level.ToString(),
+                Monster.ToMonster
+            );
         }
     }
 }
