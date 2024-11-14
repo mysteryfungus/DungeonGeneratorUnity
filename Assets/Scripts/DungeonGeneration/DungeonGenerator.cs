@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.EditorTools;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class DungeonGenerator : MonoBehaviour
 {
@@ -13,8 +14,8 @@ public class DungeonGenerator : MonoBehaviour
     [SerializeField] public Vector2 maxRoomSize = new Vector2(21, 21);
     [SerializeField] public Vector2 dungeonSize = new Vector2(100, 100);
     [SerializeField] public float minRoomSeparation = 3f;
-    [SerializeField] public GameObject roomPrefab;    // Префаб для комнаты
-    [SerializeField] public GameObject corridorPrefab; // Префаб для коридора
+    [SerializeField] private Tilemap tilemap;
+    [SerializeField] private Tile dungeonTile; // Тайл для комнат и коридоров
     [SerializeField] private bool CorrectCamera;
     [SerializeField, ButtonInvoke(nameof(RegenerateDungeon))] private bool regenerateDungeon;
 
@@ -150,11 +151,19 @@ public class DungeonGenerator : MonoBehaviour
     }
 
     void CreateRoom(Room room)
+{
+    Vector2Int bottomLeft = Vector2Int.FloorToInt(room.Position);
+    Vector2Int topRight = bottomLeft + Vector2Int.FloorToInt(room.Size);
+
+    for (int x = bottomLeft.x; x < topRight.x; x++)
     {
-        GameObject roomObj = Instantiate(roomPrefab, room.Position + room.Size / 2, Quaternion.identity, this.transform);
-        roomObj.transform.localScale = new Vector3(room.Size.x, room.Size.y, 1);
-        dungeonObjects.Add(roomObj);
+        for (int y = bottomLeft.y; y < topRight.y; y++)
+        {
+            tilemap.SetTile(new Vector3Int(x, y, 0), dungeonTile);
+        }
     }
+}
+
 
     void CreateCorridor(Room roomA, Room roomB)
     {
@@ -178,17 +187,25 @@ public class DungeonGenerator : MonoBehaviour
 
     void CreateCorridorSegment(Vector2 start, Vector2 end)
     {
-        Vector2 corridorPosition = (start + end) / 2;
-        Vector2 corridorSize = new Vector2(Mathf.Abs(start.x - end.x), Mathf.Abs(start.y - end.y));
+        Vector2Int startInt = Vector2Int.FloorToInt(start);
+        Vector2Int endInt = Vector2Int.FloorToInt(end);
 
-        if (corridorSize.x == 0) corridorSize.x = 1;
-        if (corridorSize.y == 0) corridorSize.y = 1;
-
-        
-        GameObject corridorObj = Instantiate(corridorPrefab, corridorPosition, Quaternion.identity, this.transform);
-        corridorObj.transform.localScale = new Vector3(corridorSize.x, corridorSize.y, 1);
-        dungeonObjects.Add(corridorObj);
+        if (startInt.x == endInt.x) // Вертикальный коридор
+        {
+            for (int y = Mathf.Min(startInt.y, endInt.y); y <= Mathf.Max(startInt.y, endInt.y); y++)
+            {
+                tilemap.SetTile(new Vector3Int(startInt.x, y, 0), dungeonTile);
+            }
+        }
+        else // Горизонтальный коридор
+        {
+            for (int x = Mathf.Min(startInt.x, endInt.x); x <= Mathf.Max(startInt.x, endInt.x); x++)
+            {
+                tilemap.SetTile(new Vector3Int(x, startInt.y, 0), dungeonTile);
+            }
+        }
     }
+
 
     private string GetDebuggerDisplay()
     {
