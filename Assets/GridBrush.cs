@@ -1,16 +1,20 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GridBrush : MonoBehaviour
 {
     public Camera mainCamera;       // Ссылка на камеру
     public float cellSize = 1f;     // Размер ячейки сетки (соответствует размеру спрайта в мире)
-
+    public Transform gridParent;
     public GameObject brushPrefab;  // Префаб кисти или отметки на сетке
+    
     private GameObject currentBrush;
-    private Vector3 lastBrushPosition; // Последняя позиция кисти
+    private Dictionary<Vector3, GameObject> drawnCells; // Словарь для отслеживания нарисованных клеток
 
     void Start()
     {
+        drawnCells = new Dictionary<Vector3, GameObject>(); // Инициализация словаря
+
         // Создаем кисть, если она ещё не существует
         if (brushPrefab != null)
         {
@@ -19,39 +23,71 @@ public class GridBrush : MonoBehaviour
         }
     }
 
-void Update()
+    void Update()
     {
+        // Определяем координаты мыши в мировом пространстве
+        Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorldPosition.z = 0;
+
+        // Округляем позицию до ближайшего центра ячейки
+        float gridX = Mathf.Floor(mouseWorldPosition.x / cellSize) * cellSize + cellSize / 2;
+        float gridY = Mathf.Floor(mouseWorldPosition.y / cellSize) * cellSize + cellSize / 2;
+        Vector3 gridPosition = new Vector3(gridX, gridY, 0);
+
+        // Для визуализации можно включить курсор-кисть
+        if (currentBrush != null)
+        {
+            currentBrush.SetActive(true);
+            currentBrush.transform.position = gridPosition;
+        }
+
         // Проверяем, зажата ли кнопка мыши
         if (Input.GetMouseButton(0))
         {
-            // Определяем координаты мыши в мировом пространстве
-            Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-            mouseWorldPosition.z = 0;
+            PlaceBrush(gridPosition);
+        }
 
-            // Округляем позицию до ближайшего центра ячейки
-            float gridX = Mathf.Floor(mouseWorldPosition.x / cellSize) * cellSize + cellSize / 2;
-            float gridY = Mathf.Floor(mouseWorldPosition.y / cellSize) * cellSize + cellSize / 2;
-            Vector3 gridPosition = new Vector3(gridX, gridY, 0);
-
-            // Проверяем, была ли кисть уже в этой ячейке
-            if (gridPosition != lastBrushPosition)
-            {
-                PlaceBrush(gridPosition);
-                lastBrushPosition = gridPosition; // Обновляем позицию кисти
-            }
-
-            // Для визуализации можно включить курсор-кисть
-            if (currentBrush != null)
-            {
-                currentBrush.SetActive(true);
-                currentBrush.transform.position = gridPosition;
-            }
+        // Если ПКМ зажата — стираем
+        if (Input.GetMouseButton(1))
+        {
+            EraseBrushCell(gridPosition);
         }
     }
 
     void PlaceBrush(Vector3 position)
     {
-        // Создаём новый экземпляр кисти в позиции сетки
-        Instantiate(brushPrefab, position, Quaternion.identity);
+        // Создаём временный экземпляр префаба кисти для проверки ячеек
+        GameObject tempBrush = Instantiate(brushPrefab, position, Quaternion.identity);
+
+        // Перебираем все дочерние объекты (клетки) в префабе кисти
+        foreach (Transform cell in tempBrush.transform)
+        {
+            // Вычисляем позицию каждой клетки
+            Vector3 cellPosition = new Vector3(
+                Mathf.Floor(cell.position.x / cellSize) * cellSize + cellSize / 2,
+                Mathf.Floor(cell.position.y / cellSize) * cellSize + cellSize / 2,
+                0);
+
+            // Проверяем, нет ли клетки в этой позиции
+            if (!drawnCells.ContainsKey(cellPosition))
+            {
+                // Если клетки нет, создаём её и добавляем в словарь
+                GameObject newCell = Instantiate(cell.gameObject, cellPosition, Quaternion.identity, gridParent);
+                drawnCells.Add(cellPosition, newCell);
+            }
+        }
+
+        // Удаляем временный экземпляр префаба
+        Destroy(tempBrush);
+    }
+
+    void EraseBrushCell(Vector3 position)
+    {
+        // Находим и удаляем клетки кисти в указанной позиции
+        if (drawnCells.TryGetValue(position, out GameObject existingCell))
+        {
+            Destroy(existingCell); // Удаляем клетку
+            drawnCells.Remove(position); // Убираем её из словаря
+        }
     }
 }
