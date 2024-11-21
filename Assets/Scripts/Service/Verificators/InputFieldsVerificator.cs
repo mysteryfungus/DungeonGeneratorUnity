@@ -9,8 +9,8 @@ public class InputFieldsVerificator : MonoBehaviour
     [SerializeField] private int maxCountOfRooms = 20; // потолок для количества комнат
     [SerializeField] private int minCountOfRooms = 20;
 
-    [SerializeField] private int minSizeOfRoom = 10; // минимум для вводимого минимального размера комнаты
-    [SerializeField] private int maxSizeOfRoom = 30; // потолок для вводимого максимального размера комнаты
+    [SerializeField] private int minSizeOfRoomUPBORDER = 10; // минимум для вводимого минимального размера комнаты
+    [SerializeField] private int maxSizeOfRoomDOWNBORDER = 30; // потолок для вводимого максимального размера комнаты
 
     [SerializeField] private int maxCountOfHeros = 10; // потолок для максимального размера группы героев
     [SerializeField] private int minCountOfHeros = 10;
@@ -25,9 +25,9 @@ public class InputFieldsVerificator : MonoBehaviour
         {
             maxCountOfRooms = minCountOfRooms + 1;
         }
-        if (maxSizeOfRoom < minSizeOfRoom)
+        if (maxSizeOfRoomDOWNBORDER < minSizeOfRoomUPBORDER)
         {
-            maxSizeOfRoom = minSizeOfRoom + 1;
+            maxSizeOfRoomDOWNBORDER = minSizeOfRoomUPBORDER + 1;
         }
         if (maxCountOfHeros < minCountOfHeros)
         {
@@ -37,13 +37,17 @@ public class InputFieldsVerificator : MonoBehaviour
 
     public bool ValidateLevelOfHeros(string level, out int param)
     {
-        if (ValidateTypeOfParam(tag, out param))
+        if (ValidateTypeOfParam(level, out param))
         {
             if (param >= minLevelOfHeros && param <= maxLevelOfHeros)
             {
                 return true;
             }
-            else return false;
+            else
+            {
+                param = 0;
+                return false;
+            }
         }
         else 
         {
@@ -53,13 +57,17 @@ public class InputFieldsVerificator : MonoBehaviour
 
     public bool ValidateCountOfHeros(string count, out int param)
     {
-        if (ValidateTypeOfParam(tag, out param))
+        if (ValidateTypeOfParam(count, out param))
         {
             if (param >= minCountOfHeros && param <= maxCountOfHeros)
             {
                 return true;
             }
-            else return false;
+            else
+            {
+                param = 0;
+                return false;
+            }
         }
         else
         {
@@ -69,13 +77,17 @@ public class InputFieldsVerificator : MonoBehaviour
 
     public bool ValidateMaxSizeOfRooms(string size, out int param)
     {
-        if (ValidateTypeOfParam(tag, out param))
+        if (ValidateTypeOfParam(size, out param))
         {
-            if (param > maxSizeOfRoom)
+            if (param > maxSizeOfRoomDOWNBORDER)
             {
                 return true;
             }
-            else return false;
+            else
+            {
+                param = 0;
+                return false;
+            }
         }
         else
         {
@@ -85,13 +97,17 @@ public class InputFieldsVerificator : MonoBehaviour
 
     public bool ValidateMinSizeOfRooms(string size, out int param)
     {
-        if (ValidateTypeOfParam(tag, out param))
+        if (ValidateTypeOfParam(size, out param))
         {
-            if (param < minSizeOfRoom)
+            if (param < minSizeOfRoomUPBORDER)
             {
                 return true;
             }
-            else return false;
+            else
+            {
+                param = 0;
+                return false;
+            }
         }
         else
         {
@@ -101,13 +117,17 @@ public class InputFieldsVerificator : MonoBehaviour
 
     public bool ValidateCountOfRooms(string count, out int param)
     {
-        if (ValidateTypeOfParam(tag, out param))
+        if (ValidateTypeOfParam(count, out param))
         {
             if (param >= minCountOfRooms && param <= maxCountOfRooms)
             {
                 return true;
             }
-            else return false;
+            else
+            {
+                param = 0;
+                return false;
+            }
         }
         else
         {

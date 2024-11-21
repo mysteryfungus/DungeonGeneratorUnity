@@ -474,7 +474,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f64a90cef6788840a8e0c7f47bb4a86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ui: {fileID: 1004672077}
+  _uiDocument: {fileID: 1004672077}
   _inputFieldsVerificator: {fileID: 995902694}
 --- !u!4 &1319321265
 Transform:
