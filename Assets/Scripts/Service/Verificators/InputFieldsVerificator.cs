@@ -20,18 +20,36 @@ public class InputFieldsVerificator : MonoBehaviour
         if (maxLevelOfHeros < minLevelOfHeros)
         {
             maxLevelOfHeros = minLevelOfHeros + 1;
+        } else if (minLevelOfHeros <= 0)
+        {
+            minLevelOfHeros = 1;
         }
+
         if (maxCountOfRooms < minCountOfRooms)
         {
             maxCountOfRooms = minCountOfRooms + 1;
         }
+        else if (minCountOfRooms <= 3)
+        {
+            minCountOfRooms = 4;
+        }
+
         if (maxSizeOfRoomDOWNBORDER < minSizeOfRoomUPBORDER)
         {
             maxSizeOfRoomDOWNBORDER = minSizeOfRoomUPBORDER + 1;
         }
+        else if (minSizeOfRoomUPBORDER <= 5)
+        {
+            minSizeOfRoomUPBORDER = 4;
+        }
+
         if (maxCountOfHeros < minCountOfHeros)
         {
             maxCountOfHeros = minCountOfHeros + 1;
+        }
+        else if (minCountOfHeros <= 0)
+        {
+            minCountOfHeros = 1;
         }
     }
 
