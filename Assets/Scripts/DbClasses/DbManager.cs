@@ -13,12 +13,18 @@ class DBManager : MonoBehaviour
     [SerializeField] Text dungeonNameField;
     private NameGenerator nameGen;
     private ThreatGenerator threatGen;
+    public bool debuggingThreats = true;
+    public bool useHumansInBattle = true;
+    public bool useHazards = true;
 
     void Start()
     {
         if (CheckDB()) {
             InitGenerators();
             SetNameField(nameGen.GenerateName()); //при запуске один раз генерирует название
+            if (debuggingThreats) {
+                threatGen.BuildEncounter(5, 5, 3, useHumansInBattle, useHazards);
+            }
         }
     }
 

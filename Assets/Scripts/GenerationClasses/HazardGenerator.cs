@@ -8,6 +8,7 @@ namespace GenerationClasses
     class HazardGenerator : ObjectGenerator
     {
         private List<Hazard> hazards;
+        System.Random rnd = new System.Random();
         
         public HazardGenerator()
         {
@@ -57,10 +58,13 @@ namespace GenerationClasses
         public List<Hazard> BuildHazard(int xpbudget, int party_level)
         {
             hazards = new List<Hazard>();
-            Debug.Log($"----Всего опыта на ловушки: - {xpbudget}\n");
-            System.Random rnd = new System.Random();
+            //Debug.Log($"----Всего опыта на ловушки: - {xpbudget}\n");
+            
+            
             while (xpbudget >= 2)
             {
+                //if (xpbudget >= 10 && rnd.Next(1, 3) == 3) xpbudget = BuildComplexHazard(xpbudget, party_level);
+                //if (xpbudget >= 10) xpbudget = BuildComplexHazard(xpbudget, party_level); //Гарантировать наличие комплексных ловушек
                 xpbudget = BuildSimpleHazard(xpbudget, party_level);
                 if (party_level == 1 && xpbudget < 4) break;
                 if (party_level == 2 && xpbudget < 3) break;
@@ -72,9 +76,45 @@ namespace GenerationClasses
            
         }
 
+        private int BuildComplexHazard(int xpbudget, int party_level) 
+        {
+            int hazcostindex;
+            while (true) {
+                switch (party_level)
+                {
+                    case 1:
+                        hazcostindex = rnd.Next(2, 8);
+                        break;
+                    case 2:
+                        hazcostindex = rnd.Next(1, 8);
+                        break;
+                    default:
+                        if (xpbudget == 10) hazcostindex = 0;
+                        else hazcostindex = rnd.Next(0,8);
+                        break;
+                }
+                int hazcost = complexExpCostList.ElementAt(hazcostindex).Key; // стоимость ловушки по бюджету
+                Debug.Log("Hazcost " + hazcost + " > xpbudget " + xpbudget + ": " + (hazcost > xpbudget));
+                if (hazcost > xpbudget) continue;
+
+                int hazlvl = party_level + complexExpCostList.ElementAt(hazcostindex).Value;
+                if (!complex_hazards_by_lvl.ContainsKey(hazlvl))
+                {
+                    List<Hazard> lvl_list = GetHazardsTByLevelComplexity(hazlvl, 1);
+                    complex_hazards_by_lvl[hazlvl] = lvl_list;
+                }
+                
+                int max_haz_amount = complex_hazards_by_lvl[hazlvl].Count;
+                hazard = complex_hazards_by_lvl[hazlvl][rnd.Next(0,max_haz_amount)];
+                hazards.Add(hazard);
+                xpbudget -= hazcost;
+                
+                return xpbudget;
+            }
+        }
+
         public int BuildSimpleHazard(int xpbudget, int party_level)
         {
-            System.Random rnd = new System.Random();
             int hazcostindex;
             while (true) {
                 switch (party_level)
@@ -104,7 +144,7 @@ namespace GenerationClasses
                 hazard = simple_hazards_by_lvl[hazlvl][rnd.Next(0, max_haz_amount)]; //Случайная ловушка этого уровня
                 hazards.Add(hazard);
                 xpbudget -= hazcost;
-                Debug.Log($"Сгенерировали ловушку: {hazard.Name} / {hazard.Level}; Осталось опыта на ловушки: {xpbudget}");
+                //Debug.Log($"Сгенерировали ловушку: {hazard.Name} / {hazard.Level}; Осталось опыта на ловушки: {xpbudget}");
 
                 return xpbudget;
             }

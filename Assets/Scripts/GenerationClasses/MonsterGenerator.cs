@@ -25,9 +25,10 @@ namespace GenerationClasses
                 {160, 4 }
             };
         Dictionary<int, List<Monster>> monsters_by_lvl = new Dictionary<int, List<Monster>>();
-        bool useHumansInBattle = false; 
-        public List<Monster> BuildCombat(int xpbudget, int party_level)
+        public bool useHumansInBattle; 
+        public List<Monster> BuildCombat(int xpbudget, int party_level, bool _useHumansInBattle)
         {
+            useHumansInBattle = _useHumansInBattle;
             monsters = new List<Monster>();
             //System.Console.Write($"----Всего опыта на монстров: - {xpbudget}\n");
             Random rnd = new Random();
