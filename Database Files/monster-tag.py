@@ -59,10 +59,10 @@ for url in urls:
         tag_id = tag_id_row[0] if tag_id_row else None
         print(f"Айди тега: '{tag_id}'")
 
-        print(f"Монстр: '{cleaned_name}'")
+        print(f"Человек: '{cleaned_name}'")
         monster_id_row = cursor.execute("SELECT id FROM Monsters WHERE Name = ?", (cleaned_name,)).fetchone()
         monster_id = monster_id_row[0] if monster_id_row else None
-        print(f"Айди монстра: '{monster_id}'\n")
+        print(f"Айди человека: '{monster_id}'\n")
 
         if tag_id is not None and monster_id is not None:
             cursor.execute("INSERT INTO 'Monsters-Tags' (Monster_ID, Tag_ID) VALUES (?, ?)", (monster_id, tag_id))
