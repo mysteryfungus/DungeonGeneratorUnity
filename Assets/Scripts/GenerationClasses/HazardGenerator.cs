@@ -1,7 +1,5 @@
 ﻿using DbClasses;
 using System.Collections.Generic;
-using Mono.Data.Sqlite;
-using System;
 using System.Linq;
 using UnityEngine;
 
@@ -11,9 +9,9 @@ namespace GenerationClasses
     {
         private List<Hazard> hazards;
         
-        public HazardGenerator(string _dbName)
+        public HazardGenerator(string _dbLink)
         {
-            this.dbName = _dbName;
+            this.dbLink = _dbLink;
         }
 
         private List<Hazard> GetHazardsTByLevelComplexity(int level, int complexity)
@@ -94,22 +92,19 @@ namespace GenerationClasses
                         break;
                         //TODO: обработать случаи для уровней, близких к 20.
                 }
-                int hazcost = simpleExpCostList.ElementAt(hazcostindex).Key; // стоимость моба по бюджету
-                Debug.Log($"Пробуем генерировать ловушку стоимостью: {hazcost}");
+                int hazcost = simpleExpCostList.ElementAt(hazcostindex).Key; // стоимость ловушки по бюджету
                 if (hazcost > xpbudget) continue;
-                //System.Console.Write($"Индекс стоимости по таблице - {hazcost}\n");
 
                 int hazlvl = party_level + simpleExpCostList.ElementAt(hazcostindex).Value; // лвл исходя из уровня пати
-                                                                                            //Console.WriteLine($"Пытаемся достать челика с {monlvl}\n");
                 if (!simple_hazards_by_lvl.ContainsKey(hazlvl)) //Проверка, сохраняли ли список ловушек этого уровня
                 {//Сохраняем, если нет
                     List<Hazard> lvl_list = GetHazardsTByLevelComplexity(hazlvl, 0);
                     simple_hazards_by_lvl[hazlvl] = lvl_list;
                 }
-                int max_mon_amount = simple_hazards_by_lvl[hazlvl].Count; //Сколько всего ловушек этого уровня?
-                hazard = simple_hazards_by_lvl[hazlvl][rnd.Next(0, max_mon_amount)]; //Случайная ловушка этого уровня
+                int max_haz_amount = simple_hazards_by_lvl[hazlvl].Count;
+                hazard = simple_hazards_by_lvl[hazlvl][rnd.Next(0, max_haz_amount)]; //Случайная ловушка этого уровня
                 hazards.Add(hazard);
-                xpbudget -= hazcost; //Потратили опыт на эту ловушку.
+                xpbudget -= hazcost;
                 Debug.Log($"Сгенерировали ловушку: {hazard.Name} / {hazard.Level}; Осталось опыта на ловушки: {xpbudget}");
 
                 return xpbudget;

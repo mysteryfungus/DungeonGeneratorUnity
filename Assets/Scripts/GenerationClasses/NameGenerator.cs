@@ -20,9 +20,9 @@ namespace GenerationClasses
         List<Noun> nouns = null;
         List<Adjective> adjectives = null;
 
-        public NameGenerator(string _dbName)
+        public NameGenerator(string _dbLink)
         {
-            this.dbName = _dbName;
+            this.dbLink = _dbLink;
         }
 
         public string GenerateName()

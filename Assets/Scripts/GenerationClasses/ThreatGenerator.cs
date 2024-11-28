@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace GenerationClasses
 {
@@ -34,11 +33,10 @@ namespace GenerationClasses
                 {"Extreme", 40 }
             };
         
-        public ThreatGenerator(string _dbName)
+        public ThreatGenerator(string _dbLink)
         {
-            this.dbName = _dbName;
-            this.monsterGen = new MonsterGenerator(_dbName);
-            this.hazardGen = new HazardGenerator(_dbName);
+            this.monsterGen = new MonsterGenerator(_dbLink);
+            this.hazardGen = new HazardGenerator(_dbLink);
         }
         //BuildEncounter генерирует для всех комнат сразу
         public void BuildEncounter(int party_member_amount, int party_level, int room_amount)
@@ -74,11 +72,19 @@ namespace GenerationClasses
         public string RandomDifficulty(System.Random random)
         {
             double randomNumber = random.NextDouble();
-            if (randomNumber < 0.1) return "Trivial"; //10%
-            else if (randomNumber < 0.25) return "Low"; //15%
-            else if (randomNumber < 0.77) return "Moderate"; //53%
-            else if (randomNumber < 0.93) return "Severe"; //15%
-            else return "Extreme"; //7%
+            switch (randomNumber)
+            {
+                case < 0.1:
+                    return "Trivial"; //10%
+                case < 0.25:
+                    return "Low"; //15%
+                case < 0.77:
+                    return "Moderate"; //53%
+                case < 0.93:
+                    return "Severe"; //15%
+                default:
+                    return "Extreme"; //7%
+            } //7%
         }
         //BuildRoom строит одну комнату
         public void BuildRoom(string difficulty)

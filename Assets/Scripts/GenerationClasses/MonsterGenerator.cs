@@ -1,5 +1,4 @@
 using DbClasses;
-using Mono.Data.Sqlite;
 using System.Collections.Generic;
 using System.Linq;
 using System;
@@ -9,9 +8,9 @@ namespace GenerationClasses
     class MonsterGenerator : ObjectGenerator
     {
         private List<Monster> monsters;
-        public MonsterGenerator(string _dbName)
+        public MonsterGenerator(string _dbLink)
         {
-            this.dbName = _dbName;
+            this.dbLink = _dbLink;
         }
         Monster monster;
         readonly Dictionary<int, int> expcostlist = new Dictionary<int, int>()

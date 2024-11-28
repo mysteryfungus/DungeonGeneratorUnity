@@ -1,19 +1,18 @@
 using System.Collections.Generic;
-using UnityEngine;
 using Mono.Data.Sqlite;
 
 namespace GenerationClasses
 {
     abstract class ObjectGenerator
     {
-        protected string dbName;
+        protected string dbLink;
         public delegate T CreateObjectDelegate<T>(object[] values);
 
         protected List<T> GetObjectsByQuery<T>(string query, CreateObjectDelegate<T> createObject)
         {
             List<T> resultList = new List<T>();
 
-            using (SqliteConnection connection = new SqliteConnection(dbName)) 
+            using (SqliteConnection connection = new SqliteConnection(dbLink)) 
             {
                 connection.Open();
 
