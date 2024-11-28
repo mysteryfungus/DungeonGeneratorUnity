@@ -33,10 +33,10 @@ namespace GenerationClasses
                 {"Extreme", 40 }
             };
         
-        public ThreatGenerator(string _dbLink)
+        public ThreatGenerator()
         {
-            this.monsterGen = new MonsterGenerator(_dbLink);
-            this.hazardGen = new HazardGenerator(_dbLink);
+            this.monsterGen = new MonsterGenerator();
+            this.hazardGen = new HazardGenerator();
         }
         //BuildEncounter генерирует для всех комнат сразу
         public void BuildEncounter(int party_member_amount, int party_level, int room_amount)
@@ -53,6 +53,7 @@ namespace GenerationClasses
                 Debug.Log($"Комната #{i} Сложность: {difficulty}\n");
                 BuildRoom(difficulty);
                 room_contents.Add(Tuple.Create(i, temp_monsters, temp_hazards));
+                //начало дебага
                 Debug.Log($"МОНСТРОВ: {temp_monsters.Count}; ЛОВУШЕК: {temp_hazards.Count}\n\n");
                 string tempString = "";
                 for (int j = 0; j < temp_monsters.Count; j++) {
@@ -65,6 +66,7 @@ namespace GenerationClasses
                     else tempString+=temp_hazards[j].Name + " [" + temp_hazards[j].Level.ToString() + "], ";
                     };
                 Debug.Log(tempString);
+                //конец дебага
             }
             //SaveToFile(room_contents);
         }
@@ -84,7 +86,7 @@ namespace GenerationClasses
                     return "Severe"; //15%
                 default:
                     return "Extreme"; //7%
-            } //7%
+            }
         }
         //BuildRoom строит одну комнату
         public void BuildRoom(string difficulty)

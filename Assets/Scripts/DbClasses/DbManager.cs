@@ -7,8 +7,9 @@ namespace DbClasses
 {
 class DBManager : MonoBehaviour
 {
-    static string dbName = "/Dungeon.db";
-    static string dbLink = "URI=file:" + Application.dataPath + dbName;
+    //static string dbName = "/Dungeon.db";
+    static string dbName = "/DungeonGenerator.db";
+    public static string dbLink = "URI=file:" + Application.dataPath + dbName;
     [SerializeField] Text dungeonNameField;
     private NameGenerator nameGen;
     private ThreatGenerator threatGen;
@@ -23,8 +24,9 @@ class DBManager : MonoBehaviour
 
     void InitGenerators()
     {
-        nameGen = new NameGenerator(dbLink);
-        threatGen = new ThreatGenerator(dbLink);
+        nameGen = new NameGenerator();
+
+        threatGen = new ThreatGenerator();
     }
 
     bool CheckDB()

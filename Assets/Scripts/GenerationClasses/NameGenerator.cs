@@ -20,9 +20,8 @@ namespace GenerationClasses
         List<Noun> nouns = null;
         List<Adjective> adjectives = null;
 
-        public NameGenerator(string _dbLink)
+        public NameGenerator()
         {
-            this.dbLink = _dbLink;
         }
 
         public string GenerateName()
@@ -54,7 +53,7 @@ namespace GenerationClasses
                 case 8:
                     return GenerateNameType8();
                 default:
-                    return "ашыбка";
+                    return "Error: out of index for name types";
             }
         }
 

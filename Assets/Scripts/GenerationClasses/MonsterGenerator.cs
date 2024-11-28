@@ -8,9 +8,8 @@ namespace GenerationClasses
     class MonsterGenerator : ObjectGenerator
     {
         private List<Monster> monsters;
-        public MonsterGenerator(string _dbLink)
+        public MonsterGenerator()
         {
-            this.dbLink = _dbLink;
         }
         Monster monster;
         readonly Dictionary<int, int> expcostlist = new Dictionary<int, int>()

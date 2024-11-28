@@ -9,9 +9,8 @@ namespace GenerationClasses
     {
         private List<Hazard> hazards;
         
-        public HazardGenerator(string _dbLink)
+        public HazardGenerator()
         {
-            this.dbLink = _dbLink;
         }
 
         private List<Hazard> GetHazardsTByLevelComplexity(int level, int complexity)

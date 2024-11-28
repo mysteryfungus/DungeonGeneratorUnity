@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using DbClasses;
 using Mono.Data.Sqlite;
 
 namespace GenerationClasses
 {
     abstract class ObjectGenerator
     {
-        protected string dbLink;
+        protected string dbLink = DBManager.dbLink;
         public delegate T CreateObjectDelegate<T>(object[] values);
 
         protected List<T> GetObjectsByQuery<T>(string query, CreateObjectDelegate<T> createObject)
