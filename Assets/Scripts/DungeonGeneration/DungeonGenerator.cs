@@ -15,7 +15,7 @@ public class DungeonGenerator : MonoBehaviour
     [SerializeField] public Vector2 dungeonSize = new Vector2(100, 100);
     [SerializeField] public float minRoomSeparation = 3f;
     [SerializeField] private Tilemap tilemap;
-    [SerializeField] private Tile dungeonTile; // Тайл для комнат и коридоров
+    [SerializeField] private RuleTile dungeonTile; // Тайл для комнат и коридоров
     [SerializeField] private bool CorrectCamera;
     [SerializeField, ButtonInvoke(nameof(RegenerateDungeon))] private bool regenerateDungeon;
 
