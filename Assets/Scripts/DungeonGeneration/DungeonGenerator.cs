@@ -20,9 +20,7 @@ public class DungeonGenerator : MonoBehaviour
     [SerializeField, ButtonInvoke(nameof(RegenerateDungeon))] private bool regenerateDungeon;
 
     private List<Room> rooms = new List<Room>();
-    private List<GameObject> dungeonObjects = new List<GameObject>();
     private HashSet<(Room, Room)> connectedRooms = new HashSet<(Room, Room)>();
-
     public delegate void Regeneration(DungeonGenerator dungeonGenerator);
     public static event Regeneration OnRegeneration;
 
@@ -42,12 +40,7 @@ public class DungeonGenerator : MonoBehaviour
     {
         rooms.Clear();
         connectedRooms.Clear();
-
-        foreach (GameObject obj in dungeonObjects)
-        {
-            Destroy(obj);
-        }
-        dungeonObjects.Clear();
+        tilemap.ClearAllTiles();
     }
 
     void GenerateDungeon()
