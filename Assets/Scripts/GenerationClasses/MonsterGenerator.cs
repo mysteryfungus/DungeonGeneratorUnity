@@ -25,6 +25,7 @@ namespace GenerationClasses
                 {160, 4 }
             };
         Dictionary<int, List<Monster>> monsters_by_lvl = new Dictionary<int, List<Monster>>();
+        bool useHumansInBattle = false; 
         public List<Monster> BuildCombat(int xpbudget, int party_level)
         {
             monsters = new List<Monster>();
@@ -71,10 +72,22 @@ namespace GenerationClasses
 
         private List<Monster> GetMonstersTByLevel(int level)
         {
-            return GetObjectsByQuery(
+            List<Monster> monsters = GetObjectsByQuery(
                 "SELECT * FROM Monsters WHERE Level = " + level.ToString(),
                 Monster.ToMonster
             );
+            if (useHumansInBattle)
+            {
+                List<Monster> humans = GetObjectsByQuery(
+                "SELECT * FROM Humans WHERE Level = " + level.ToString(),
+                Monster.ToMonster
+            );
+                monsters.AddRange(humans);
+                return monsters;
+            }
+            else 
+            return monsters;
+
         }
     }
 }
