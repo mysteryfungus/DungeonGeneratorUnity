@@ -7,6 +7,7 @@ public class GridBrush : MonoBehaviour
     public float cellSize = 1f;     // Размер ячейки сетки (соответствует размеру спрайта в мире)
     public Transform gridParent;
     public GameObject brushPrefab;  // Префаб кисти или отметки на сетке
+
     
     private GameObject currentBrush;
     private Dictionary<Vector3, GameObject> drawnCells; // Словарь для отслеживания нарисованных клеток
@@ -50,7 +51,7 @@ public class GridBrush : MonoBehaviour
         // Если ПКМ зажата — стираем
         if (Input.GetMouseButton(1))
         {
-            EraseBrushCell(gridPosition);
+            UseEraser(gridPosition);
         }
     }
 
@@ -89,5 +90,31 @@ public class GridBrush : MonoBehaviour
             Destroy(existingCell); // Удаляем клетку
             drawnCells.Remove(position); // Убираем её из словаря
         }
+    }
+
+    void UseEraser(Vector3 basePosition)
+    {
+        // Создаём временный экземпляр ластика для проверки ячеек
+        GameObject tempEraser = Instantiate(brushPrefab, basePosition, Quaternion.identity);
+
+        foreach (Transform cell in tempEraser.transform)
+        {
+            Vector3 cellPosition = GetCellPosition(cell.position);
+            if (drawnCells.TryGetValue(cellPosition, out GameObject existingCell))
+            {
+                Destroy(existingCell);       // Удаляем клетку из сцены
+                drawnCells.Remove(cellPosition); // Убираем её из словаря
+            }
+        }
+
+        Destroy(tempEraser);
+    }
+
+    Vector3 GetCellPosition(Vector3 worldPosition)
+    {
+        // Округление позиции до ближайшей ячейки
+        float gridX = Mathf.Floor(worldPosition.x / cellSize) * cellSize + cellSize / 2;
+        float gridY = Mathf.Floor(worldPosition.y / cellSize) * cellSize + cellSize / 2;
+        return new Vector3(gridX, gridY, 0);
     }
 }

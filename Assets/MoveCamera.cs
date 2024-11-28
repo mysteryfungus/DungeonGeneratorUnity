@@ -22,7 +22,7 @@ public class MoveCamera : MonoBehaviour
         if (scroll != 0.0f)
         {
             Camera.main.orthographicSize -= scroll * zoomSpeed;
-            Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 2, 200);
+            Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, 2, 300);
         }
     }
 }
