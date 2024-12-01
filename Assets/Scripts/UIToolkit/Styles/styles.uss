@@ -120,3 +120,24 @@
 .settings-panel-disabled {
     display: none;
 }
+
+.toggle-style {
+    flex-grow: 0;
+    justify-content: space-between;
+    -unity-text-align: middle-center;
+    width: 15%;
+    align-items: stretch;
+    align-self: center;
+    height: auto;
+    -unity-slice-left: 0;
+    -unity-slice-top: 0;
+    -unity-slice-right: 0;
+    -unity-slice-bottom: 0;
+    -unity-background-scale-mode: scale-and-crop;
+    -unity-slice-scale: 1px;
+    scale: 2 2;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+}

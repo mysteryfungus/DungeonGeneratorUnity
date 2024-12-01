@@ -14,7 +14,7 @@
                     <ui:Button text="Продвинутые" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Complex" class="button-tab" />
                 </ui:GroupBox>
                 <ui:VisualElement style="flex-grow: 1; background-color: rgb(212, 204, 178); margin-top: 0; margin-right: 4px; margin-bottom: 0; margin-left: 4px;">
-                    <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto" name="hard-settings" class="settings-panel">
+                    <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" name="hard-settings" class="settings-panel settings-panel-disabled">
                         <ui:VisualElement name="count-rooms" class="setting-field-container">
                             <CustomInputField width="29.49" height="0" BorderColor="#44413EFF" border="5" radious="5" margin="0" padding="0" fontsize="40" class="custom-input-field" style="height: 72px; flex-direction: row; align-self: stretch; justify-content: space-around; flex-grow: 1; align-items: stretch; width: auto;" />
                             <ui:Label tabindex="-1" text="Число комнат" parse-escape-sequences="true" display-tooltip-when-elided="true" class="setting-label" style="width: 60%;" />
@@ -29,14 +29,22 @@
                         </ui:VisualElement>
                         <ui:VisualElement name="level-heros" class="setting-field-container" style="flex-grow: 1; flex-direction: row-reverse;">
                             <CustomInputField width="29.49" height="0" BorderColor="#44413EFF" border="5" radious="5" margin="0" padding="0" name="CustomInputField" fontsize="40" class="custom-input-field" style="height: 72px; flex-direction: row; align-self: stretch; justify-content: space-around; flex-grow: 1; align-items: stretch; width: auto;" />
-                            <ui:Label tabindex="-1" text="Уровень героев" parse-escape-sequences="true" display-tooltip-when-elided="true" class="setting-label" style="width: 60%; -unity-text-align: middle-left; font-size: 25px;" />
+                            <ui:Label tabindex="-1" text="Уровень персонажей" parse-escape-sequences="true" display-tooltip-when-elided="true" class="setting-label" style="width: 60%; -unity-text-align: middle-left; font-size: 25px;" />
                         </ui:VisualElement>
                         <ui:VisualElement name="count-heros" class="setting-field-container" style="flex-grow: 1; flex-direction: row-reverse;">
                             <CustomInputField width="29.49" height="0" BorderColor="#44413EFF" border="5" radious="5" margin="0" padding="0" name="CustomInputField" fontsize="40" class="custom-input-field" style="height: 72px; flex-direction: row; align-self: stretch; justify-content: space-around; flex-grow: 1; align-items: stretch; width: auto;" />
-                            <ui:Label tabindex="-1" text="Число героев" parse-escape-sequences="true" display-tooltip-when-elided="true" class="setting-label" style="width: 60%; -unity-text-align: middle-left; font-size: 25px;" />
+                            <ui:Label tabindex="-1" text="Число персонажей" parse-escape-sequences="true" display-tooltip-when-elided="true" class="setting-label" style="width: 60%; -unity-text-align: middle-left; font-size: 25px;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="hero-enemy-toggle" class="setting-field-container" style="flex-grow: 1; flex-direction: row; -unity-text-align: middle-center; justify-content: space-between; align-self: auto; align-items: auto; padding-bottom: 0; margin-top: 10px;">
+                            <ui:Label tabindex="-1" text="Человеческие враги" parse-escape-sequences="true" display-tooltip-when-elided="true" class="setting-label" />
+                            <ui:Toggle value="false" class="setting-label toggle-style" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="trap-toggle" class="setting-field-container" style="flex-grow: 1; flex-direction: row; justify-content: space-between; margin-top: 10px;">
+                            <ui:Label tabindex="-1" text="Ловушки" parse-escape-sequences="true" display-tooltip-when-elided="true" class="setting-label" />
+                            <ui:Toggle class="setting-label toggle-style" style="flex-grow: 0;" />
                         </ui:VisualElement>
                     </ui:ScrollView>
-                    <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto" name="easy-settings" class="settings-panel settings-panel-disabled">
+                    <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto" name="easy-settings" class="settings-panel">
                         <ui:VisualElement name="count-rooms" class="setting-field-container">
                             <CustomInputField width="29.49" height="0" BorderColor="#44413EFF" border="5" radious="5" margin="0" padding="0" name="CustomInputField" fontsize="40" class="custom-input-field" style="height: 72px; flex-direction: row; align-self: stretch; justify-content: space-around; flex-grow: 1; align-items: stretch; width: auto;" />
                             <ui:Label tabindex="-1" text="Число комнат" parse-escape-sequences="true" display-tooltip-when-elided="true" class="setting-label" style="width: 60%;" />
@@ -45,6 +53,7 @@
                             <CustomInputField width="29.49" height="0" BorderColor="#44413EFF" border="5" radious="5" margin="0" padding="0" name="CustomInputField" fontsize="40" class="custom-input-field" style="height: 72px; flex-direction: row; align-self: stretch; justify-content: space-around; flex-grow: 1; align-items: stretch; width: auto;" />
                             <ui:Label tabindex="-1" text="Макс. размер комнаты" parse-escape-sequences="true" display-tooltip-when-elided="true" class="setting-label" style="width: 60%; -unity-text-align: middle-left; font-size: 25px; flex-wrap: nowrap;" />
                         </ui:VisualElement>
+                        <ui:EnumField label="Enum" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" value="Center" style="-unity-background-image-tint-color: rgb(255, 255, 255); background-color: rgba(255, 255, 255, 0);" />
                     </ui:ScrollView>
                 </ui:VisualElement>
             </ui:VisualElement>
