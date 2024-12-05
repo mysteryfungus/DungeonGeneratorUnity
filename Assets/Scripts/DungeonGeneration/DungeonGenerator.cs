@@ -21,9 +21,8 @@ public class DungeonGenerator : MonoBehaviour
 
     private List<Room> rooms = new List<Room>();
     private HashSet<(Room, Room)> connectedRooms = new HashSet<(Room, Room)>();
-    public delegate void Regeneration(DungeonGenerator dungeonGenerator);
-    public static event Regeneration OnRegeneration;
-
+    public delegate void Generation(DungeonGenerator dungeonGenerator);
+    public static event Generation OnGeneration;
     void Start()
     {
         RegenerateDungeon();
@@ -32,8 +31,7 @@ public class DungeonGenerator : MonoBehaviour
     public void RegenerateDungeon()
     {
         ClearDungeon();
-        GenerateDungeon();
-        if(CorrectCamera) OnRegeneration?.Invoke(this);
+        GenerationRoutine();
     }
 
     void ClearDungeon()
@@ -43,11 +41,12 @@ public class DungeonGenerator : MonoBehaviour
         tilemap.ClearAllTiles();
     }
 
-    void GenerateDungeon()
+    void GenerationRoutine()
     {
         PlaceRooms();
         SeparateRooms();
         ConnectRooms();
+        OnGeneration?.Invoke(this);
     }
 
     void PlaceRooms()

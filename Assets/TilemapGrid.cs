@@ -6,43 +6,44 @@ using UnityEngine.Tilemaps;
 
 public class TilemapGrid : MonoBehaviour
 {
-    public Tilemap tilemap;            // Ссылка на Tilemap
-    public TileBase tilePrefab;        // Ссылка на Tile (созданный ранее)
+    public Tilemap tilemap; // Ссылка на Tilemap
+    public TileBase tilePrefab; // Ссылка на Tile (созданный ранее)
     [SerializeField] private RectTransform bounds;
     void OnEnable()
     {
-        DungeonGenerator.OnRegeneration += RegenerateGrid;
+        DungeonGenerator.OnGeneration += GenerateGrid;
     }
 
     void OnDisable()
     {
-        DungeonGenerator.OnRegeneration -= RegenerateGrid;
+        DungeonGenerator.OnGeneration -= GenerateGrid;
     }
-    void Start()
+
+    public void GenerateGrid(DungeonGenerator dungeonGenerator)
     {
+        bounds.transform.position = dungeonGenerator.dungeonSize / 2;
+        bounds.rect.size.Set(dungeonGenerator.dungeonSize.x, dungeonGenerator.dungeonSize.y);
+        tilemap.ClearAllTiles();
+        tilemap.transform.position = bounds.transform.position;
         GenerateGrid();
     }
 
     void GenerateGrid()
     {
-        int gridWidth = (int)bounds.rect.width;
-        int gridHeight = (int)bounds.rect.height;
-        Vector2Int gridCenter = new Vector2Int((int)bounds.rect.position.x, (int)bounds.rect.position.y);
-        Debug.Log($"W:{gridWidth}; H:{gridHeight}; C:{gridCenter}");
-        // Генерация тайлов
-        for (int x = -gridWidth; x < gridWidth; x++)
+        Rect area = bounds.rect;
+        int tilesX = Mathf.CeilToInt(area.width / tilemap.cellSize.x);
+        int tilesY = Mathf.CeilToInt(area.height / tilemap.cellSize.y);
+
+        Vector3 rectCenter = bounds.position;
+        Vector3Int startTile = tilemap.WorldToCell(rectCenter - new Vector3(area.width / 2, area.height / 2, 0));
+
+        for (int x = 0; x < tilesX; x++)
         {
-            for (int y = -gridHeight; y < gridHeight; y++)
+            for (int y = 0; y < tilesY; y++)
             {
-                Vector3Int tilePosition = new Vector3Int(gridCenter.x + x, gridCenter.y + y, 0); // Позиция клетки
-                tilemap.SetTile(tilePosition, tilePrefab);         // Установка Tile на позицию
+                Vector3Int tilePosition = startTile + new Vector3Int(x, y, 0);
+                tilemap.SetTile(tilePosition, tilePrefab);
             }
         }
-    }
-
-    public void RegenerateGrid(DungeonGenerator dungeonGenerator)
-    {
-        tilemap.ClearAllTiles();
-        GenerateGrid();
     }
 }

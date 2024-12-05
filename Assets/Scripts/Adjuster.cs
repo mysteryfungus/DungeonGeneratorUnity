@@ -7,17 +7,15 @@ using UnityEngine;
 public class Adjuster : MonoBehaviour
 {
     [SerializeField] private Camera Camera;
-    [SerializeField] private RectTransform BoundBox;
-    [SerializeField] private float BoundBoxScaleFactor;
     float CalculateCameraSize(DungeonGenerator dungeonGenerator) => (dungeonGenerator.dungeonSize.x + dungeonGenerator.dungeonSize.y) / 2 - Math.Min(dungeonGenerator.dungeonSize.x, dungeonGenerator.dungeonSize.y) / 2;
     void OnEnable()
     {
-        DungeonGenerator.OnRegeneration += AdjustPosition;
+        DungeonGenerator.OnGeneration += AdjustPosition;
     }
 
     void OnDisable()
     {
-        DungeonGenerator.OnRegeneration -= AdjustPosition;
+        DungeonGenerator.OnGeneration -= AdjustPosition;
     }
 
     public void AdjustPosition(DungeonGenerator dungeonGenerator)
@@ -25,7 +23,5 @@ public class Adjuster : MonoBehaviour
         Camera.transform.position = dungeonGenerator.dungeonSize / 2;
         Camera.orthographicSize = CalculateCameraSize(dungeonGenerator);
         Camera.transform.Translate(Vector3.back);
-        BoundBox.transform.position = dungeonGenerator.dungeonSize / 2;
-        BoundBox.rect.size.Set(dungeonGenerator.dungeonSize.x, dungeonGenerator.dungeonSize.y);
     }
 }
