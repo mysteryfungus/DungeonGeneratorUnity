@@ -16,11 +16,13 @@ public class Tab
     public void InactiveScrollView()
     {
         _scrollView.AddToClassList("settings-panel-disabled");
+        _button.AddToClassList("button-tab-inactive");
     }
 
     public void ActiveScrollView()
     {
         _scrollView.RemoveFromClassList("settings-panel-disabled");
+        _button.RemoveFromClassList("button-tab-inactive");
     }
 }
 

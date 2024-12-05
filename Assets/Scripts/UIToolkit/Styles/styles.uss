@@ -141,3 +141,27 @@
     border-bottom-width: 0;
     border-left-width: 0;
 }
+
+.dropdown-basic {
+    flex-grow: 1;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-self: auto;
+    align-items: stretch;
+    height: 50%;
+    width: auto;
+    font-size: 20px;
+    -unity-text-align: upper-left;
+    -unity-font-style: bold;
+}
+
+.button-tab-active {
+    background-color: rgb(156, 148, 120);
+}
+
+.button-tab-inactive {
+}
+
+.button-tab-inactive {
+    background-color: rgb(147, 140, 118);
+}

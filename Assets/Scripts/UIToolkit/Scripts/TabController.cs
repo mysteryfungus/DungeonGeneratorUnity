@@ -25,7 +25,7 @@ public class TabController
     {
         if (tabs.Exists((x) => x == element))
         {
-            Debug.Log("Элемент есть в списке вкладок");
+            //Debug.Log("Элемент есть в списке вкладок");
             foreach (var v in tabs)
             {
                 v.InactiveScrollView();

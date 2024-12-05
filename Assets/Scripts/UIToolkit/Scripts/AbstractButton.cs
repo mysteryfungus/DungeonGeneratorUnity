@@ -8,5 +8,10 @@ public abstract class AbstractButton : IButton
         element.clicked += OnClick;
     }
 
+    public void Unlink(Button element)
+    {
+        element.clicked -= OnClick;
+    }
+
     public abstract void OnClick();
 }
