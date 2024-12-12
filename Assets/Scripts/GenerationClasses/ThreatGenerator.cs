@@ -1,58 +1,19 @@
 ﻿using DbClasses;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UnityEngine;
 
 namespace GenerationClasses
 {
     
-    class ThreatGenerator
+    class ThreatGenerator : ObjectGenerator
     {
-        private string dbName;
         private MonsterGenerator monsterGen;
         private HazardGenerator hazardGen;
-        public ThreatGenerator(string _dbName)
-        {
-            this.dbName = _dbName;
-            this.monsterGen = new MonsterGenerator(_dbName);
-            this.hazardGen = new HazardGenerator(_dbName);
-        }
-
-    }
-}
-/*
-namespace GenerationClasses
-{
-    class ThreatGenerator
-    {
-        private ApplicationContext db;
-        private MonsterGenerator monsterGenerator;
-        private HazardGenerator hazardGenerator;
         private int party_member_amount;
         private int party_level;
-        private int room_amount;
-        private List<Tuple<int, List<Monster>, List<Hazard>>> room_contents = new List<Tuple<int, List<Monster>, List<Hazard>>>();
         private List<Monster> temp_monsters;
-        private List<Hazard> temp_hazards = new List<Hazard>();
-        /*
-         * 1, List<Monster>, List<Hazard>
-         * 2, List<Monster>, List<Hazard>
-         * 
-         *'/
-        public ThreatGenerator()
-        {
-
-        }
-
-        public ThreatGenerator(ApplicationContext _db)
-        {
-            this.db = _db;
-            monsterGenerator = new MonsterGenerator(db);
-            hazardGenerator = new HazardGenerator(db);
-        }
-
+        private List<Hazard> temp_hazards;
         readonly Dictionary<string, int> xb_by_difficulty = new Dictionary<string, int>()
             {
                 {"Trivial", 40 },
@@ -70,41 +31,50 @@ namespace GenerationClasses
                 {"Extreme", 40 }
             };
         
-        public void Init()
+        public ThreatGenerator()
         {
-            //Инициализация себя и MonsterGenerator + HazardGenerator
+            this.monsterGen = new MonsterGenerator();
+            this.hazardGen = new HazardGenerator();
         }
-
-        public void BuildEncounter(int party_member_amount, int party_level, int room_amount)
+        //BuildEncounter генерирует для всех комнат сразу
+        public void BuildEncounter(int party_member_amount, int party_level, int room_amount, bool useHumansInBattle, bool useHazards)
         {
-            Random random = new Random();
+            System.Random random = new System.Random();
             this.party_member_amount = party_member_amount;
             this.party_level = party_level;
-            this.room_amount = room_amount;
+            List<Tuple<int, List<Monster>, List<Hazard>>> room_contents = new List<Tuple<int, List<Monster>, List<Hazard>>>();
             // При trivial или low сложностях группа 1 игрока 1 уровня не может набрать необходимое количество опыта для 1 монстра
             // if (party_member_amount == 1 && party_level == 1 && (difficulty == "Low" || difficulty == "Trivial")) difficulty = "Moderate";
             for (int i  = 1; i <= room_amount; i++)
             {
                 String difficulty = RandomDifficulty(random);
-                System.Console.Write($"Комната #{i} Сложность: {difficulty}\n");
-                BuildRoom(difficulty);
+                Debug.Log($"Комната #{i} Сложность: {difficulty}\n");
+                BuildRoom(difficulty, useHumansInBattle, useHazards);
                 room_contents.Add(Tuple.Create(i, temp_monsters, temp_hazards));
-                System.Console.Write($"МОНСТРОВ: {temp_monsters.Count}; ЛОВУШЕК: {temp_hazards.Count}\n\n");
             }
-            System.Console.Write($"Сгенерировано приколов: {room_contents.Count}\n");
+            //rooms.Add(room_contents);
             //SaveToFile(room_contents);
         }
-        public string RandomDifficulty(Random random)
+        //случайно выбрать сложность, чаще всего выпадает средняя
+        public string RandomDifficulty(System.Random random)
         {
             double randomNumber = random.NextDouble();
-            if (randomNumber < 0.1) return "Trivial"; //10%
-            else if (randomNumber < 0.25) return "Low"; //15%
-            else if (randomNumber < 0.77) return "Moderate"; //53%
-            else if (randomNumber < 0.93) return "Severe"; //15%
-            else return "Extreme"; //7%
+            switch (randomNumber)
+            {
+                case < 0.1:
+                    return "Trivial"; //10%
+                case < 0.25:
+                    return "Low"; //15%
+                case < 0.77:
+                    return "Moderate"; //53%
+                case < 0.93:
+                    return "Severe"; //15%
+                default:
+                    return "Extreme"; //7%
+            }
         }
-
-        public void BuildRoom(string difficulty)
+        //BuildRoom строит одну комнату
+        public void BuildRoom(string difficulty, bool useHumansInBattle, bool useHazards)
         {
             int xpbudget = xb_by_difficulty[difficulty];
             // Вариативность от кол-ва людей в пати отн. сложности
@@ -119,16 +89,17 @@ namespace GenerationClasses
              * monsterGenerator.BuildCombat((int)(xpbudget*0.9))
              * hazardGenerator.BuildHazard((int)(xpbudget*0.1))
              * }
-             * else monsterGenerator.BuildCombat(xpbudget)*'/
-            if ((int)(xpbudget * 0.1) >= 4)
+             * else monsterGenerator.BuildCombat(xpbudget)*/
+
+            if (useHazards && (int)(xpbudget * 0.1) >= 4)
             {
-                temp_monsters = monsterGenerator.BuildCombat((int)(xpbudget * 0.9), party_level);
-                temp_hazards = hazardGenerator.BuildHazard((int)(xpbudget * 0.1), party_level);
+                temp_monsters = monsterGen.BuildCombat((int)(xpbudget * 0.8), party_level, useHumansInBattle);
+                temp_hazards = hazardGen.BuildHazard((int)(xpbudget * 0.2), party_level);
             } else
             {
-                temp_monsters = monsterGenerator.BuildCombat(xpbudget, party_level);
+                temp_monsters = monsterGen.BuildCombat(xpbudget, party_level, useHumansInBattle);
             }
         }
+
     }
 }
-*/

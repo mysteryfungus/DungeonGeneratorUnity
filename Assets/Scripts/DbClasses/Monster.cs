@@ -2,7 +2,7 @@
 
 namespace DbClasses
 {
-    class Monster
+    class Monster : DbClass
     {
         public int id { get; set; }
         public string Name { get; set; }
@@ -24,13 +24,13 @@ namespace DbClasses
             this.Level = Level;
         }
 
-        public static Monster ToMonster(object _id, object _Name, object _Description, object _MechDescription, object _Level)
+        public static Monster ToMonster(object[] values)
         {
-            int id = Convert.ToInt32(_id);
-            string Name = _Name.ToString();
-            string Description = _Description.ToString();
-            string MechDescription = _MechDescription.ToString();
-            int Level = Convert.ToInt32(_Level);
+            int id = Convert.ToInt32(values[0]);
+            string Name = values[1].ToString();
+            string Description = values[2].ToString();
+            string MechDescription = values[3].ToString();
+            int Level = Convert.ToInt32(values[4]);
             return new Monster(id, Name, Description, MechDescription, Level);
         }        
 

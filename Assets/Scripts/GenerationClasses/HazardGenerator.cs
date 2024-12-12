@@ -1,52 +1,29 @@
 ﻿using DbClasses;
 using System.Collections.Generic;
-using Mono.Data.Sqlite;
+using System.Linq;
 using UnityEngine;
 
 namespace GenerationClasses
 {
-    class HazardGenerator
+    class HazardGenerator : ObjectGenerator
     {
-        private string dbName;
         private List<Hazard> hazards;
-        private int hazardsCount = 0;
+        System.Random rnd = new System.Random();
         
-        public HazardGenerator(string _dbName)
+        public HazardGenerator()
         {
-            this.dbName = _dbName;
-            GetHazardsT();
         }
 
-        private void GetHazardsT()
+        private List<Hazard> GetHazardsTByLevelComplexity(int level, int complexity)
         {
-            using (SqliteConnection connection = new SqliteConnection(dbName)) 
-            {
-                connection.Open();
-
-                using (SqliteCommand command = connection.CreateCommand()) 
-                {
-                    command.CommandText = "SELECT * FROM Hazards";
-
-                    using (SqliteDataReader reader = command.ExecuteReader()) 
-                    {
-                        hazards = new List<Hazard>();
-                        //сохраняем результат как List;
-                        while (reader.Read())
-                        {
-                            hazards.Add(Hazard.ToHazard(reader.GetValue(0), reader.GetValue(1), reader.GetValue(2), reader.GetValue(3),reader.GetValue(4),reader.GetValue(5),reader.GetValue(6)));
-                        }
-                        //выясняем, сколько всего записей в таблице "Names"
-                        hazardsCount = hazards.Count;
-                    }
-                }
-                connection.Close();
-            }
-            Debug.Log("Hazards read: " + hazardsCount);
-            Debug.Log("First hazard: " + hazards[0].Name);
+            string tempComplexity;
+            if (complexity == 0) tempComplexity = "Простая";
+            else tempComplexity = "Комплексная";
+            return GetObjectsByQuery(
+                "SELECT * FROM Hazards WHERE Level = " + level + " AND Complexity = \"" + tempComplexity + "\"",
+                Hazard.ToHazard
+            );
         }
-        /*
-        private object db;
-        private List<Hazard> hazards;
 
         readonly Dictionary<int, int> simpleExpCostList = new Dictionary<int, int>()
             {
@@ -74,15 +51,6 @@ namespace GenerationClasses
                 {160, 4 }
             };
 
-        public HazardGenerator()
-        {
-
-        }
-
-        public HazardGenerator(ApplicationContext _db)
-        {
-            this.db = _db;
-        }
         Dictionary<int, List<Hazard>> simple_hazards_by_lvl = new Dictionary<int, List<Hazard>>();
         Dictionary<int, List<Hazard>> complex_hazards_by_lvl = new Dictionary<int, List<Hazard>>();
         Hazard hazard;
@@ -90,11 +58,12 @@ namespace GenerationClasses
         public List<Hazard> BuildHazard(int xpbudget, int party_level)
         {
             hazards = new List<Hazard>();
-            System.Console.Write($"----Всего опыта на ловушки: - {xpbudget}\n");
-            Random rnd = new Random();
+            //Debug.Log($"----Всего опыта на ловушки: - {xpbudget}\n");
+            
             while (xpbudget >= 2)
             {
-                xpbudget = BuildSimpleHazard(xpbudget, party_level);
+                if ((xpbudget >= 10 && party_level > 2 || xpbudget >= 20) && rnd.Next(1, 3) == 3) xpbudget = BuildComplexHazard(xpbudget, party_level); //33% что будет комплексная если условия выполняются
+                else xpbudget = BuildSimpleHazard(xpbudget, party_level);
                 if (party_level == 1 && xpbudget < 4) break;
                 if (party_level == 2 && xpbudget < 3) break;
             }
@@ -105,9 +74,43 @@ namespace GenerationClasses
            
         }
 
+        private int BuildComplexHazard(int xpbudget, int party_level) 
+        {
+            int hazcostindex;
+            while (true) {
+                switch (party_level)
+                {
+                    case 1:
+                        hazcostindex = rnd.Next(2, 8);
+                        break;
+                    case 2:
+                        hazcostindex = rnd.Next(1, 8);
+                        break;
+                    default:
+                        if (xpbudget == 10) hazcostindex = 0;
+                        else hazcostindex = rnd.Next(0,8);
+                        break;
+                }
+                int hazcost = complexExpCostList.ElementAt(hazcostindex).Key; // стоимость ловушки по бюджету
+                if (hazcost > xpbudget) continue;
+
+                int hazlvl = party_level + complexExpCostList.ElementAt(hazcostindex).Value;
+                if (!complex_hazards_by_lvl.ContainsKey(hazlvl))
+                {
+                    List<Hazard> lvl_list = GetHazardsTByLevelComplexity(hazlvl, 1);
+                    complex_hazards_by_lvl[hazlvl] = lvl_list;
+                }
+                
+                int max_haz_amount = complex_hazards_by_lvl[hazlvl].Count;
+                hazard = complex_hazards_by_lvl[hazlvl][rnd.Next(0,max_haz_amount)];
+                hazards.Add(hazard);
+                xpbudget -= hazcost;
+                return xpbudget;
+            }
+        }
+
         public int BuildSimpleHazard(int xpbudget, int party_level)
         {
-            Random rnd = new Random();
             int hazcostindex;
             while (true) {
                 switch (party_level)
@@ -124,27 +127,23 @@ namespace GenerationClasses
                         break;
                         //TODO: обработать случаи для уровней, близких к 20.
                 }
-                int hazcost = simpleExpCostList.ElementAt(hazcostindex).Key; // стоимость моба по бюджету
-                Console.WriteLine($"Пробуем генерировать ловушку стоимостью: {hazcost}");
+                int hazcost = simpleExpCostList.ElementAt(hazcostindex).Key; // стоимость ловушки по бюджету
                 if (hazcost > xpbudget) continue;
-                //System.Console.Write($"Индекс стоимости по таблице - {hazcost}\n");
 
                 int hazlvl = party_level + simpleExpCostList.ElementAt(hazcostindex).Value; // лвл исходя из уровня пати
-                                                                                            //Console.WriteLine($"Пытаемся достать челика с {monlvl}\n");
-                if (!simple_hazards_by_lvl.ContainsKey(hazlvl)) //Проверка, сохраняли ли список монстров этого уровня
-                {
-                    List<Hazard> lvl_list = db.Hazards.Where(x => x.Level == hazlvl && x.Complexity == "Простая").ToList(); //Сохраняем, если нет
+                if (!simple_hazards_by_lvl.ContainsKey(hazlvl)) //Проверка, сохраняли ли список ловушек этого уровня
+                {//Сохраняем, если нет
+                    List<Hazard> lvl_list = GetHazardsTByLevelComplexity(hazlvl, 0);
                     simple_hazards_by_lvl[hazlvl] = lvl_list;
                 }
-                int max_mon_amount = simple_hazards_by_lvl[hazlvl].Count; //Сколько всего монстров этого уровня?
-                hazard = simple_hazards_by_lvl[hazlvl][rnd.Next(0, max_mon_amount)]; //Случайный монстр этого уровня
+                int max_haz_amount = simple_hazards_by_lvl[hazlvl].Count;
+                hazard = simple_hazards_by_lvl[hazlvl][rnd.Next(0, max_haz_amount)]; //Случайная ловушка этого уровня
                 hazards.Add(hazard);
-                xpbudget -= hazcost; //Потратили опыт на этого монстра.
-                Console.WriteLine($"Сгенерировали ловушку: {hazard.Name} / {hazard.Level}; Осталось опыта на ловушки: {xpbudget}");
+                xpbudget -= hazcost;
 
                 return xpbudget;
             }
             
-        }*/
+        }
     }
 }
