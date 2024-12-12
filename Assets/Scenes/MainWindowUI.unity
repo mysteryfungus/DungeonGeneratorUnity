@@ -904,7 +904,6 @@ MonoBehaviour:
   tilemap: {fileID: 1883592561}
   tilePrefab: {fileID: 11400000, guid: e794f844fcfe0d04caff92af4b2bb29d, type: 2}
   bounds: {fileID: 1049229896}
-  boundsScaleFactor: 0.8
 --- !u!1001 &399012564
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3316,6 +3315,7 @@ GameObject:
   - component: {fileID: 1452451081}
   - component: {fileID: 1452451082}
   - component: {fileID: 1452451083}
+  - component: {fileID: 1452451084}
   m_Layer: 0
   m_Name: Dungeon
   m_TagString: Untagged
@@ -3373,6 +3373,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Camera: {fileID: 2044871122}
+--- !u!114 &1452451084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1452451079}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76178fd8e7a44864dbe0e58b33dc161d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tilemap: {fileID: 9040063}
+  floorTile: {fileID: 11400000, guid: e6a1f0d97129f7946bc341fa1961afd1, type: 2}
+  wallTile: {fileID: 0}
+  isEditingMode: 0
 --- !u!1 &1452759581
 GameObject:
   m_ObjectHideFlags: 0
