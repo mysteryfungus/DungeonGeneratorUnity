@@ -51,20 +51,6 @@ namespace GenerationClasses
                 Debug.Log($"Комната #{i} Сложность: {difficulty}\n");
                 BuildRoom(difficulty, useHumansInBattle, useHazards);
                 room_contents.Add(Tuple.Create(i, temp_monsters, temp_hazards));
-                //начало дебага
-                Debug.Log($"МОНСТРОВ: {temp_monsters.Count}; ЛОВУШЕК: {temp_hazards.Count}\n\n");
-                string tempString = "";
-                for (int j = 0; j < temp_monsters.Count; j++) {
-                    if (j == temp_monsters.Count - 1) tempString+=temp_monsters[j].Name + " [" + temp_monsters[j].Level.ToString() + "].";
-                    else tempString+=temp_monsters[j].Name + " [" + temp_monsters[j].Level.ToString() + "], ";
-                }
-                tempString += "\n";
-                for (int j = 0; j < temp_hazards.Count; j++) {
-                    if (j == temp_hazards.Count - 1) tempString+=temp_hazards[j].Name + " [" + temp_hazards[j].Level.ToString() + "] (" + temp_hazards[j].Complexity + ").";
-                    else tempString+=temp_hazards[j].Name + " [" + temp_hazards[j].Level.ToString() + "] (" + temp_hazards[j].Complexity + "), ";
-                    };
-                Debug.Log(tempString);
-                //конец дебага
             }
             //rooms.Add(room_contents);
             //SaveToFile(room_contents);

@@ -21,10 +21,10 @@ class DBManager : MonoBehaviour
     {
         if (CheckDB()) {
             InitGenerators();
-            SetNameField(nameGen.GenerateName()); //при запуске один раз генерирует название
-            if (debuggingThreats) {
-                threatGen.BuildEncounter(5, 5, 3, useHumansInBattle, useHazards);
-            }
+            //SetNameField(nameGen.GenerateName()); //при запуске один раз генерирует название
+            //if (debuggingThreats) {
+                //threatGen.BuildEncounter(5, 5, 3, useHumansInBattle, useHazards);
+            //}
         }
     }
 
