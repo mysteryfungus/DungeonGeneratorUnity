@@ -1832,6 +1832,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ui: {fileID: 295873947}
+  cam: {fileID: 2044871122}
 --- !u!1 &581316907
 GameObject:
   m_ObjectHideFlags: 0
@@ -3794,8 +3795,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 435064599}
   m_HandleRect: {fileID: 435064598}
   m_Direction: 2
-  m_Value: 1.0000001
-  m_Size: 0.5306955
+  m_Value: 1
+  m_Size: 0.6500209
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
