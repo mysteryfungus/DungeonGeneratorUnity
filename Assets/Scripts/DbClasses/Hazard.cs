@@ -43,5 +43,10 @@ namespace DbClasses
         {
             return Name;
         }
+
+        public string ToTextFileString()
+        {
+            return Name + " / "+ Complexity +" опасность" + Level + "\nСкрытность: КС "+ Stealth + "\nОписание: " +Description+"\n"+MechDescription;
+        }
     }
 }

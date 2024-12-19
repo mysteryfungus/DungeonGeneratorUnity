@@ -38,5 +38,10 @@ namespace DbClasses
         {
             return Name;
         }
+
+        public string ToTextFileString()
+        {
+            return Name + " / Существо " + Level + "\nОписание: "+Description+MechDescription;
+        }
     }
 }

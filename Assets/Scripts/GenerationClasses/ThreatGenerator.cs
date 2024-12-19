@@ -37,7 +37,7 @@ namespace GenerationClasses
             this.hazardGen = new HazardGenerator();
         }
         //BuildEncounter генерирует для всех комнат сразу
-        public void BuildEncounter(int party_member_amount, int party_level, int room_amount, bool useHumansInBattle, bool useHazards)
+        public List<Tuple<int, List<Monster>, List<Hazard>>> BuildEncounter(int party_member_amount, int party_level, int room_amount, bool useHumansInBattle, bool useHazards)
         {
             System.Random random = new System.Random();
             this.party_member_amount = party_member_amount;
@@ -52,8 +52,24 @@ namespace GenerationClasses
                 BuildRoom(difficulty, useHumansInBattle, useHazards);
                 room_contents.Add(Tuple.Create(i, temp_monsters, temp_hazards));
             }
-            //rooms.Add(room_contents);
-            //SaveToFile(room_contents);
+            return room_contents;
+        }
+
+        public List<Tuple<object, List<Monster>, List<Hazard>>> BuildEncounter(int party_member_amount, int party_level, List<object> roomsCoordinates, bool useHumansInBattle, bool useHazards)
+        {
+            System.Random random = new System.Random();
+            this.party_member_amount = party_member_amount;
+            this.party_level = party_level;
+            List<Tuple<object, List<Monster>, List<Hazard>>> room_contents = new List<Tuple<object, List<Monster>, List<Hazard>>>();
+            // При trivial или low сложностях группа 1 игрока 1 уровня не может набрать необходимое количество опыта для 1 монстра
+            // if (party_member_amount == 1 && party_level == 1 && (difficulty == "Low" || difficulty == "Trivial")) difficulty = "Moderate";
+            for (int i  = 0; i < roomsCoordinates.Count; i++)
+            {
+                String difficulty = RandomDifficulty(random);
+                BuildRoom(difficulty, useHumansInBattle, useHazards);
+                room_contents.Add(Tuple.Create(roomsCoordinates[i], temp_monsters, temp_hazards));
+            }
+            return room_contents;
         }
         //случайно выбрать сложность, чаще всего выпадает средняя
         public string RandomDifficulty(System.Random random)
