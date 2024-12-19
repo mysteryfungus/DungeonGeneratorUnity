@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class Adjuster : MonoBehaviour
+public class Adjuster : MonoBehaviour //Штука для переноса камеры в центр данжа и зума камеры таким образом, чтоб весь данж был виден
 {
     [SerializeField] private Camera Camera;
     float CalculateCameraSize(DungeonGenerator dungeonGenerator) => (dungeonGenerator.dungeonSize.x + dungeonGenerator.dungeonSize.y) / 2 - Math.Min(dungeonGenerator.dungeonSize.x, dungeonGenerator.dungeonSize.y) / 2;

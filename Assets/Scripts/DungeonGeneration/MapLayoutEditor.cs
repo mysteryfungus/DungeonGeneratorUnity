@@ -1,12 +1,13 @@
+using System;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+//#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 public class TilemapEditor : MonoBehaviour
 {
     public Tilemap tilemap; // Ссылка на Tilemap
     public RuleTile floorTile; // Ссылка на тайл пола. Собсна то, что мы ставим
-    public RuleTile? wallTile; // Ссылка на тайл стены. Наличие не обязательно
+    public RuleTile wallTile; // Ссылка на тайл стены. Наличие не обязательно
     public bool isEditingMode = false; // Флаг режима редактирования
 
     private bool isDrawing = false; // Режим рисования (для добавления)
