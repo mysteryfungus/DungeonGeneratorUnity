@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using DbClasses;
+using UnityEngine;
 using UnityEngine.UIElements;
+using Zenject;
 
 public class SubmitButton : AbstractButton
 {
@@ -8,6 +10,9 @@ public class SubmitButton : AbstractButton
         HARD,
         EASY
     }
+
+    private DungeonGenerator generator;
+    private DBManager dbManager;
 
     protected CustomInputField _countR;
     protected CustomInputField _maxR;
@@ -34,6 +39,9 @@ public class SubmitButton : AbstractButton
         _humanEnemyToggle = _human;
 
         _state = SubmitButtonState.HARD;
+
+        generator = GameObjectInjector.OnGetDungeonGenerator.Invoke();
+        dbManager = GameObjectInjector.OnGetDBManager.Invoke();
     }
 
     public SubmitButton(DropdownField size, DropdownField count, CustomInputField lvl, CustomInputField countH, Toggle _trap, Toggle _human)
@@ -46,6 +54,9 @@ public class SubmitButton : AbstractButton
         _countOfRoom = count;
 
         _state = SubmitButtonState.EASY;
+
+        generator = GameObjectInjector.OnGetDungeonGenerator.Invoke();
+        dbManager = GameObjectInjector.OnGetDBManager.Invoke();
     }
 
     public override void OnClick()
@@ -66,6 +77,13 @@ public class SubmitButton : AbstractButton
                 if (flag)
                 {
                     //Debug.Log("Данные успешно переданы");
+
+                    generator.roomCount = countOfRoom;
+                    generator.maxRoomSize = new Vector2(maxOfRooms, maxOfRooms);
+                    generator.minRoomSize = new Vector2(minOfRoom, minOfRoom);
+
+                    generator.RegenerateDungeon();
+                    dbManager.GenerateRoomsContent(countOfHeros, levelOfHeros, countOfRoom, _humanEnemyToggle.value, _trapToggle.value);
                 }
                 else
                 {
@@ -78,6 +96,24 @@ public class SubmitButton : AbstractButton
 
                 _countH.Validate(ref flag, out int countOfHerosSMP);
                 _lvlH.Validate(ref flag, out int levelOfHerosSMP);
+                var sizeOfRoomGeneric = SimpleSizesVerificator.GetIntFromStringSizeOfRoom(_sizeOfRoom.value);
+                var countOfRoomGeneric = SimpleSizesVerificator.GetIntFromStringCountOfRoom(_countOfRoom.value);
+
+                if (flag)
+                {
+                    generator.roomCount = countOfRoomGeneric;
+                    generator.maxRoomSize = new Vector2(sizeOfRoomGeneric + Random.Range(-5, 5), sizeOfRoomGeneric + Random.Range(-5, 5));
+                    generator.minRoomSize = new Vector2(sizeOfRoomGeneric + Random.Range(-5, 5), sizeOfRoomGeneric + Random.Range(-5, 5));
+
+                    generator.RegenerateDungeon();
+                    dbManager.GenerateRoomsContent(countOfHerosSMP, levelOfHerosSMP, countOfRoomGeneric, _humanEnemyToggle.value, _trapToggle.value);
+
+                    Debug.Log($"{sizeOfRoomGeneric}.{countOfRoomGeneric}");
+                }
+                else
+                {
+                    //Debug.Log("В данных обнаружена ошибка");
+                }
 
                 break;
         }

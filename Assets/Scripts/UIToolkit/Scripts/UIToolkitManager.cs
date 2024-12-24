@@ -71,8 +71,8 @@ public class UIToolkitManager : MonoBehaviour
         _import = FindElement("import") as Button;
         _change = FindElement("change") as Button;
 
-        _trap = FindElement("trap-toggle") as Toggle;
-        _human = FindElement("hero-emeny-toggle") as Toggle;
+        _trap = FindElement("trap-toggle").Q<Toggle>();
+        _human = FindElement("hero-enemy-toggle").Q<Toggle>();
 
         _tabComplex = new Tab(FindElement("hard-settings") as ScrollView, FindElement("Complex") as  Button);
         _tabSimple = new Tab(FindElement("easy-settings") as ScrollView, FindElement("Simple") as Button);
@@ -86,11 +86,11 @@ public class UIToolkitManager : MonoBehaviour
         _countHerosSMP = FindElement("count-heros-simple").Q<CustomInputField>();
         _countHerosSMP.OnInjectValidator(_inputFieldsVerificator.ValidateCountOfHeros);
 
-        _trapSMP = FindElement("trap-toggle-simple") as Toggle;
-        _humanSMP = FindElement("hero-emeny-toggle-simple") as Toggle;
+        _trapSMP = FindElement("trap-toggle-simple").Q<Toggle>();
+        _humanSMP = FindElement("hero-enemy-toggle-simple").Q<Toggle>();
 
-        _sizeOfRoom = FindElement("simple-room-size") as DropdownField;
-        _countOfRooms = FindElement("simple-room-count") as DropdownField;
+        _sizeOfRoom = FindElement("simple-room-size").Q<DropdownField>();
+        _countOfRooms = FindElement("simple-room-count").Q<DropdownField>();
     }
 
     private void InstallTabController()
@@ -112,6 +112,9 @@ public class UIToolkitManager : MonoBehaviour
 
         _tabController.AddTab(_tabSimple);
         _tabController.AddTab(_tabComplex);
+
+        Submit = new SubmitButton(_sizeOfRoom, _countOfRooms, _levelHerosSMP, _countHerosSMP, _trapSMP, _humanSMP);
+        Submit.Link(_submit);
     }
 
     private VisualElement FindElement(string name)
