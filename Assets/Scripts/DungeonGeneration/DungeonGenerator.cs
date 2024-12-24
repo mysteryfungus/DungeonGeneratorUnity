@@ -43,7 +43,7 @@ public class DungeonGenerator : MonoBehaviour
     void GenerationRoutine()
     {
         PlaceRooms();
-        SeparateRooms();
+        //SeparateRooms();
         ConnectRooms();
         adjuster.AdjustPosition(this);
         FillWalls();
@@ -51,8 +51,6 @@ public class DungeonGenerator : MonoBehaviour
 
     void FillWalls()
     {
-        Debug.Log(bounds.rect.x);
-        Debug.Log(bounds.rect.y);
         Rect area = bounds.rect;
         Vector3 rectCenter = bounds.position;
         Vector3 rectSize = bounds.rect.size;
@@ -125,6 +123,7 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
+/*
     void SeparateRooms()
     {
         bool roomsMoved;
@@ -145,8 +144,10 @@ public class DungeonGenerator : MonoBehaviour
                     }
                 }
             }
+            Debug.Log(roomsMoved);
         } while (roomsMoved);
     }
+*/
 
     void ConnectRooms()
     {

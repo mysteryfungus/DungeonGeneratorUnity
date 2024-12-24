@@ -3665,7 +3665,7 @@ MonoBehaviour:
   roomCount: 10
   minRoomSize: {x: 4, y: 3}
   maxRoomSize: {x: 10, y: 10}
-  dungeonSize: {x: 30, y: 20}
+  dungeonSize: {x: 40, y: 25}
   minRoomSeparation: 3
   tilemap: {fileID: 9040063}
   dungeonTile: {fileID: 11400000, guid: e6a1f0d97129f7946bc341fa1961afd1, type: 2}
