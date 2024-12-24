@@ -5,15 +5,6 @@ public class Adjuster : MonoBehaviour //Штука для переноса ка�
 {
     [SerializeField] private Camera Camera;
     float CalculateCameraSize(DungeonGenerator dungeonGenerator) => (dungeonGenerator.dungeonSize.x + dungeonGenerator.dungeonSize.y) / 2 - Math.Min(dungeonGenerator.dungeonSize.x, dungeonGenerator.dungeonSize.y) / 2;
-    void OnEnable()
-    {
-        DungeonGenerator.OnGeneration += AdjustPosition;
-    }
-
-    void OnDisable()
-    {
-        DungeonGenerator.OnGeneration -= AdjustPosition;
-    }
 
     public void AdjustPosition(DungeonGenerator dungeonGenerator)
     {

@@ -64,10 +64,6 @@ public class TilemapEditor : MonoBehaviour
     {
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector3Int cellPosition = tilemap.WorldToCell(worldPosition);
-        if (!tilemap.HasTile(cellPosition) || tile == wallTile) // Избегаем лишних операций
-        {
-            tilemap.SetTile(cellPosition, tile);
-        }
+        tilemap.SetTile(cellPosition, tile);
     }
 }
-

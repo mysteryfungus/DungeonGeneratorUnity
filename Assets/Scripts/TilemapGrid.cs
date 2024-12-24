@@ -7,8 +7,9 @@ using UnityEngine.Tilemaps;
 public class TilemapGrid : MonoBehaviour
 {
     public Tilemap tilemap; // Ссылка на Tilemap
-    public TileBase tilePrefab; // Ссылка на Tile (созданный ранее)
-    [SerializeField] private RectTransform bounds;
+    public RuleTile wallTile; // Ссылка на тайл стены
+    [SerializeField] private RectTransform bounds; // Ссылка на RectTransform BoundBox
+/*
     void OnEnable()
     {
         DungeonGenerator.OnGeneration += GenerateGrid;
@@ -18,31 +19,27 @@ public class TilemapGrid : MonoBehaviour
     {
         DungeonGenerator.OnGeneration -= GenerateGrid;
     }
+*/
 
-    public void GenerateGrid(DungeonGenerator dungeonGenerator)
-    {
-        bounds.transform.position = dungeonGenerator.dungeonSize / 2;
-        bounds.rect.size.Set(dungeonGenerator.dungeonSize.x, dungeonGenerator.dungeonSize.y);
-        tilemap.ClearAllTiles();
-        tilemap.transform.position = bounds.transform.position;
-        GenerateGrid();
-    }
-
-    void GenerateGrid()
+    void GenerateGrid(DungeonGenerator dungeonGenerator)
     {
         Rect area = bounds.rect;
-        int tilesX = Mathf.CeilToInt(area.width / tilemap.cellSize.x);
-        int tilesY = Mathf.CeilToInt(area.height / tilemap.cellSize.y);
-
         Vector3 rectCenter = bounds.position;
-        Vector3Int startTile = tilemap.WorldToCell(rectCenter - new Vector3(area.width / 2, area.height / 2, 0));
+        Vector3 rectSize = bounds.rect.size;
 
-        for (int x = 0; x < tilesX; x++)
+        // Вычисляем начальную и конечную позиции тайлов
+        Vector3Int startTile = tilemap.WorldToCell(rectCenter - rectSize / 2);
+        Vector3Int endTile = tilemap.WorldToCell(rectCenter + rectSize / 2);
+
+        for (int x = startTile.x; x <= endTile.x; x++)
         {
-            for (int y = 0; y < tilesY; y++)
+            for (int y = startTile.y; y <= endTile.y; y++)
             {
-                Vector3Int tilePosition = startTile + new Vector3Int(x, y, 0);
-                tilemap.SetTile(tilePosition, tilePrefab);
+                Vector3Int tilePosition = new Vector3Int(x, y, 0);
+                if (tilemap.GetTile(tilePosition) == null)
+                {
+                    tilemap.SetTile(tilePosition, wallTile);
+                }
             }
         }
     }

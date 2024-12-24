@@ -36,5 +36,5 @@ Material:
     - _ShiftY: 0.5
     m_Colors:
     - _BackgroundColor: {r: 0, g: 0, b: 0, a: 0}
-    - _GridColor: {r: 0.23018861, g: 0.23018861, b: 0.23018861, a: 1}
+    - _GridColor: {r: 0, g: 0, b: 0, a: 0.2509804}
   m_BuildTextureStacks: []

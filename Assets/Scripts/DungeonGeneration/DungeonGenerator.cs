@@ -1,25 +1,29 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class DungeonGenerator : MonoBehaviour
 {
     [SerializeField] public int roomCount = 10; //Параметр максимального количества комнат
-    [SerializeField] public  Vector2 minRoomSize = new Vector2(6, 6); //Параметр минимального размера комнаты
+    [SerializeField] public Vector2 minRoomSize = new Vector2(6, 6); //Параметр минимального размера комнаты
     [SerializeField] public Vector2 maxRoomSize = new Vector2(21, 21); //Параметр максимального размера комнаты
     [SerializeField] public Vector2 dungeonSize = new Vector2(100, 100); //Параметр размера подземелья
     [SerializeField] public float minRoomSeparation = 3f; //Параметр минимального расстояния между комнатами. Продвинутый параметр генерации
     [SerializeField] private Tilemap tilemap; //Тайлмап, куда наши тайлы ставятся
     [SerializeField] private RuleTile dungeonTile; //Тайл для комнат и коридоров
+    [SerializeField] private RuleTile wallTile; // Ссылка на тайл стены
     [SerializeField] private bool CorrectCamera; //Будет ли камера после генерации перемещаться в центр подземелья
+    [SerializeField] private RectTransform bounds; // Ссылка на RectTransform BoundBox
     [SerializeField, ButtonInvoke(nameof(RegenerateDungeon))] private bool regenerateDungeon; //Кнопочка в инспекторе для перегенерации данжа
 
+    private Adjuster adjuster;
     private List<Room> rooms = new List<Room>();
     private HashSet<(Room, Room)> connectedRooms = new HashSet<(Room, Room)>();
-    public delegate void Generation(DungeonGenerator dungeonGenerator);
-    public static event Generation OnGeneration;
+
     void Start()
     {
+        adjuster = GetComponent<Adjuster>();
         RegenerateDungeon();
     }
 
@@ -41,7 +45,43 @@ public class DungeonGenerator : MonoBehaviour
         PlaceRooms();
         SeparateRooms();
         ConnectRooms();
-        OnGeneration?.Invoke(this);
+        adjuster.AdjustPosition(this);
+        FillWalls();
+    }
+
+    void FillWalls()
+    {
+        Debug.Log(bounds.rect.x);
+        Debug.Log(bounds.rect.y);
+        Rect area = bounds.rect;
+        Vector3 rectCenter = bounds.position;
+        Vector3 rectSize = bounds.rect.size;
+
+        // Преобразуем центр и размеры области в мировые координаты
+        Vector3 worldBottomLeft = rectCenter - rectSize / 2;
+        Vector3 worldTopRight = rectCenter + rectSize / 2;
+
+        // Вычисляем начальную и конечную позиции тайлов
+        Vector3Int startTile = tilemap.WorldToCell(worldBottomLeft);
+        Vector3Int endTile = tilemap.WorldToCell(worldTopRight);
+
+        // Корректируем координаты для правильного заполнения
+        startTile.x = Mathf.FloorToInt(startTile.x);
+        startTile.y = Mathf.FloorToInt(startTile.y);
+        endTile.x = Mathf.CeilToInt(endTile.x);
+        endTile.y = Mathf.CeilToInt(endTile.y);
+
+        for (int x = startTile.x; x <= endTile.x; x++)
+        {
+            for (int y = startTile.y; y <= endTile.y; y++)
+            {
+                Vector3Int tilePosition = new Vector3Int(x, y, 0);
+                if (tilemap.GetTile(tilePosition) == null)
+                {
+                    tilemap.SetTile(tilePosition, wallTile);
+                }
+            }
+        }
     }
 
     void PlaceRooms()

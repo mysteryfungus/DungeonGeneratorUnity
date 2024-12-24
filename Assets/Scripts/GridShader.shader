@@ -3,7 +3,7 @@ Shader "Custom/GridShader"
     Properties
     {
         _GridColor ("Grid Color", Color) = (1, 1, 1, 1)
-        _BackgroundColor ("Background Color", Color) = (0, 0, 0, 1)
+        _BackgroundColor ("Background Color", Color) = (0, 0, 0, 0)
         _CellSize ("Cell Size", Float) = 1.0
         _LineWidth ("Line Width", Float) = 0.05
         _ShiftX ("Shift X", Float) = 0.0
@@ -11,13 +11,14 @@ Shader "Custom/GridShader"
     }
     SubShader
     {
-        Tags { "RenderType"="Transparent" }
+        Tags { "Queue"="Overlay" "RenderType"="Transparent" }
         Pass
         {
             ZWrite On
             ZTest LEqual
             Cull Off
             Lighting Off
+            Blend SrcAlpha OneMinusSrcAlpha
 
             CGPROGRAM
             #pragma vertex vert
@@ -53,17 +54,10 @@ Shader "Custom/GridShader"
 
             float4 frag (v2f i) : SV_Target
             {
-                // Привязываем координаты к ячейкам сетки с учётом сдвига
                 float2 gridUV = (i.worldPos.xy + float2(_ShiftX, _ShiftY)) / _CellSize;
-
-                // Определяем, насколько близко текущая точка к линии
                 float lineX = abs(frac(gridUV.x) - 0.5);
                 float lineY = abs(frac(gridUV.y) - 0.5);
-
-                // Учитываем ширину линий
                 float lineThickness = _LineWidth / _CellSize;
-
-                // Если точка попадает в линию, используем цвет сетки, иначе фон
                 float mask = step(lineThickness, min(lineX, lineY));
                 return lerp(_GridColor, _BackgroundColor, mask);
             }
