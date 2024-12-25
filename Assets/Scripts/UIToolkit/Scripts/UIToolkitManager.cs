@@ -5,6 +5,13 @@ using Zenject;
 
 public class UIToolkitManager : MonoBehaviour
 {
+
+    [SerializeField] private Export exporter;
+    [SerializeField] private TilemapEditor editor;
+    [SerializeField] private DungeonGenerator generator;
+    [SerializeField] private Color toggledButtonColor;
+    private StyleColor buttonDefaultColor;
+
     [Inject] private UIDocument _document;
     [Inject] private InputFieldsVerificator _inputFieldsVerificator;
     private TabController _tabController;
@@ -37,7 +44,6 @@ public class UIToolkitManager : MonoBehaviour
 
     public AbstractButton Submit;
 
-
     private void Start()
     {
         InstallUIElementsForComplex();
@@ -47,6 +53,8 @@ public class UIToolkitManager : MonoBehaviour
         _tabSimple = new Tab(FindElement("easy-settings") as ScrollView, FindElement("Simple") as Button);
 
         InstallTabController();
+
+        buttonDefaultColor = _change.style.color;
     }
 
     private void InstallUIElementsForComplex()
@@ -68,8 +76,10 @@ public class UIToolkitManager : MonoBehaviour
 
         _submit = FindElement("submit") as Button;
         _export = FindElement("export") as Button;
+        _export.RegisterCallback<ClickEvent>(ExportButtonClick);
         _import = FindElement("import") as Button;
         _change = FindElement("change") as Button;
+        _change.RegisterCallback<ClickEvent>(EditButtonClick);
 
         _trap = FindElement("trap-toggle").Q<Toggle>();
         _human = FindElement("hero-enemy-toggle").Q<Toggle>();
@@ -120,5 +130,21 @@ public class UIToolkitManager : MonoBehaviour
     private VisualElement FindElement(string name)
     {
         return _document.rootVisualElement.Q(name);
+    }
+
+    private void ExportButtonClick(ClickEvent click)
+    {
+        exporter.OnClick();
+    }
+
+    private void EditButtonClick(ClickEvent click)
+    {
+        editor.isEditingMode = !editor.isEditingMode;
+        if(editor.isEditingMode){
+            _change.style.color = (StyleColor)toggledButtonColor;
+        } else {
+            _change.style.color = buttonDefaultColor;
+        }
+        
     }
 }

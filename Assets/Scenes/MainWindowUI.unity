@@ -724,6 +724,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5ba1ed40c99d144a800b7dca9d5ed58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  exporter: {fileID: 2044871127}
+  editor: {fileID: 1452451084}
+  generator: {fileID: 1452451082}
+  toggledButtonColor: {r: 0.4641509, g: 0.4330358, b: 0.33191168, a: 1}
 --- !u!1 &1041952796
 GameObject:
   m_ObjectHideFlags: 0
@@ -1103,6 +1107,7 @@ GameObject:
   - component: {fileID: 2044871121}
   - component: {fileID: 2044871126}
   - component: {fileID: 2044871125}
+  - component: {fileID: 2044871127}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1212,6 +1217,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 2044871122}
   canvasRect: {fileID: 1049229896}
+--- !u!114 &2044871127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044871120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1078a5cea73b91349b9142165531823f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ui: {fileID: 1004672077}
+  cam: {fileID: 2044871122}
 --- !u!1 &2080623606
 GameObject:
   m_ObjectHideFlags: 0
