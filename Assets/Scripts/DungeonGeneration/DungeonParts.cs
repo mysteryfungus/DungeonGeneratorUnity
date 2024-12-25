@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Room
@@ -18,7 +16,7 @@ public class Room
         return Position + Size / 2;
     }
 
-    public bool Intersects(Room other)
+    public bool Intersects(Room other) //Проверка на пересечение комнаты с другой комнатой
     {
         return !(Position.x + Size.x <= other.Position.x || 
                  Position.x >= other.Position.x + other.Size.x ||
