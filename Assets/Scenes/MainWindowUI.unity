@@ -507,7 +507,6 @@ GameObject:
   m_Component:
   - component: {fileID: 383077930}
   - component: {fileID: 383077929}
-  - component: {fileID: 383077931}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -544,21 +543,6 @@ Transform:
   - {fileID: 1883592563}
   m_Father: {fileID: 1452451081}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &383077931
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 383077928}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 620267156c4688744b040bad4ec612f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tilemap: {fileID: 1883592561}
-  tilePrefab: {fileID: 11400000, guid: e794f844fcfe0d04caff92af4b2bb29d, type: 2}
-  bounds: {fileID: 1049229896}
 --- !u!1 &488391923
 GameObject:
   m_ObjectHideFlags: 0
@@ -985,11 +969,13 @@ MonoBehaviour:
   roomCount: 10
   minRoomSize: {x: 4, y: 3}
   maxRoomSize: {x: 10, y: 10}
-  dungeonSize: {x: 10, y: 50}
+  dungeonSize: {x: 30, y: 20}
   minRoomSeparation: 3
   tilemap: {fileID: 9040063}
   dungeonTile: {fileID: 11400000, guid: e6a1f0d97129f7946bc341fa1961afd1, type: 2}
+  wallTile: {fileID: 11400000, guid: bd776aa8cfff96241adfa0f7765bf8d8, type: 2}
   CorrectCamera: 1
+  bounds: {fileID: 1049229896}
   regenerateDungeon: 0
 --- !u!114 &1452451083
 MonoBehaviour:
@@ -1018,7 +1004,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilemap: {fileID: 9040063}
   floorTile: {fileID: 11400000, guid: e6a1f0d97129f7946bc341fa1961afd1, type: 2}
-  wallTile: {fileID: 0}
+  wallTile: {fileID: 11400000, guid: bd776aa8cfff96241adfa0f7765bf8d8, type: 2}
   isEditingMode: 0
 --- !u!1 &1883592560
 GameObject:
@@ -1029,55 +1015,31 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1883592563}
-  - component: {fileID: 1883592561}
-  - component: {fileID: 1883592562}
+  - component: {fileID: 1883592564}
   m_Layer: 0
-  m_Name: GridMap
+  m_Name: GridLayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1839735485 &1883592561
-Tilemap:
+--- !u!4 &1883592563
+Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1883592560}
-  m_Enabled: 1
-  m_Tiles: {}
-  m_AnimatedTiles: {}
-  m_TileAssetArray: []
-  m_TileSpriteArray: []
-  m_TileMatrixArray: []
-  m_TileColorArray: []
-  m_TileObjectToInstantiateArray: []
-  m_AnimationFrameRate: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Origin: {x: 0, y: 0, z: 0}
-  m_Size: {x: 0, y: 0, z: 1}
-  m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
-  m_TileOrientation: 0
-  m_TileOrientationMatrix:
-    e00: 1
-    e01: 0
-    e02: 0
-    e03: 0
-    e10: 0
-    e11: 1
-    e12: 0
-    e13: 0
-    e20: 0
-    e21: 0
-    e22: 1
-    e23: 0
-    e30: 0
-    e31: 0
-    e32: 0
-    e33: 1
---- !u!483693784 &1883592562
-TilemapRenderer:
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1000, y: 1000, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 383077930}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1883592564
+SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1089,14 +1051,14 @@ TilemapRenderer:
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
-  m_LightProbeUsage: 0
-  m_ReflectionProbeUsage: 0
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 33dbb158cab73d649b755e16ba93bf38, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1116,30 +1078,18 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -1
-  m_ChunkSize: {x: 32, y: 32, z: 32}
-  m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
-  m_MaxChunkCount: 16
-  m_MaxFrameAge: 16
-  m_SortOrder: 0
-  m_Mode: 0
-  m_DetectChunkCullingBounds: 0
+  m_SortingOrder: 1
+  m_Sprite: {fileID: 21300000, guid: d86a64c0bd6b9114fa6386eddfe0bd59, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1.28, y: 1.28}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
---- !u!4 &1883592563
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1883592560}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 383077930}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_SpriteSortPoint: 0
 --- !u!1 &2044871120
 GameObject:
   m_ObjectHideFlags: 0
