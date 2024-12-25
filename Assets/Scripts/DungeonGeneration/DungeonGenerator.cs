@@ -1,33 +1,34 @@
+using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using JetBrains.Annotations;
+using UnityEditor;
+using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class DungeonGenerator : MonoBehaviour
 {
-    [SerializeField] public int roomCount = 10; //Параметр максимального количества комнат
-    [SerializeField] public Vector2 minRoomSize = new Vector2(6, 6); //Параметр минимального размера комнаты
-    [SerializeField] public Vector2 maxRoomSize = new Vector2(21, 21); //Параметр максимального размера комнаты
-    [SerializeField] public Vector2 dungeonSize = new Vector2(100, 100); //Параметр размера подземелья
-    [SerializeField] public float minRoomSeparation = 3f; //Параметр минимального расстояния между комнатами. Продвинутый параметр генерации
-    [SerializeField] private Tilemap tilemap; //Тайлмап, куда наши тайлы ставятся
-    [SerializeField] private RuleTile dungeonTile; //Тайл для комнат и коридоров
-    [SerializeField] private RuleTile wallTile; // Ссылка на тайл стены
-    [SerializeField] private bool CorrectCamera; //Будет ли камера после генерации перемещаться в центр подземелья
-    [SerializeField] private RectTransform bounds; // Ссылка на RectTransform BoundBox
-    [SerializeField, ButtonInvoke(nameof(RegenerateDungeon))] private bool regenerateDungeon; //Кнопочка в инспекторе для перегенерации данжа
+    [SerializeField] public int roomCount = 10;
+    [SerializeField] public  Vector2 minRoomSize = new Vector2(6, 6);
+    [SerializeField] public Vector2 maxRoomSize = new Vector2(21, 21);
+    [SerializeField] public Vector2 dungeonSize = new Vector2(100, 100);
+    [SerializeField] public float minRoomSeparation = 3f;
+    [SerializeField] private Tilemap tilemap;
+    [SerializeField] private RuleTile dungeonTile; // Тайл для комнат и коридоров
+    [SerializeField] private bool CorrectCamera;
+    [SerializeField, ButtonInvoke(nameof(RegenerateDungeon))] private bool regenerateDungeon;
 
-    private Adjuster adjuster;
     private List<Room> rooms = new List<Room>();
     private HashSet<(Room, Room)> connectedRooms = new HashSet<(Room, Room)>();
-
+    public delegate void Generation(DungeonGenerator dungeonGenerator);
+    public static event Generation OnGeneration;
     void Start()
     {
-        adjuster = GetComponent<Adjuster>();
         RegenerateDungeon();
     }
 
-    public void RegenerateDungeon() //Если это вызвать, то данж перегенерируется
+    public void RegenerateDungeon()
     {
         ClearDungeon();
         GenerationRoutine();
@@ -43,43 +44,9 @@ public class DungeonGenerator : MonoBehaviour
     void GenerationRoutine()
     {
         PlaceRooms();
-        //SeparateRooms();
+        SeparateRooms();
         ConnectRooms();
-        adjuster.AdjustPosition(this);
-        FillWalls();
-    }
-
-    void FillWalls()
-    {
-        Rect area = bounds.rect;
-        Vector3 rectCenter = bounds.position;
-        Vector3 rectSize = bounds.rect.size;
-
-        // Преобразуем центр и размеры области в мировые координаты
-        Vector3 worldBottomLeft = rectCenter - rectSize / 2;
-        Vector3 worldTopRight = rectCenter + rectSize / 2;
-
-        // Вычисляем начальную и конечную позиции тайлов
-        Vector3Int startTile = tilemap.WorldToCell(worldBottomLeft);
-        Vector3Int endTile = tilemap.WorldToCell(worldTopRight);
-
-        // Корректируем координаты для правильного заполнения
-        startTile.x = Mathf.FloorToInt(startTile.x);
-        startTile.y = Mathf.FloorToInt(startTile.y);
-        endTile.x = Mathf.CeilToInt(endTile.x);
-        endTile.y = Mathf.CeilToInt(endTile.y);
-
-        for (int x = startTile.x; x <= endTile.x; x++)
-        {
-            for (int y = startTile.y; y <= endTile.y; y++)
-            {
-                Vector3Int tilePosition = new Vector3Int(x, y, 0);
-                if (tilemap.GetTile(tilePosition) == null)
-                {
-                    tilemap.SetTile(tilePosition, wallTile);
-                }
-            }
-        }
+        OnGeneration?.Invoke(this);
     }
 
     void PlaceRooms()
@@ -123,7 +90,6 @@ public class DungeonGenerator : MonoBehaviour
         }
     }
 
-/*
     void SeparateRooms()
     {
         bool roomsMoved;
@@ -144,10 +110,8 @@ public class DungeonGenerator : MonoBehaviour
                     }
                 }
             }
-            Debug.Log(roomsMoved);
         } while (roomsMoved);
     }
-*/
 
     void ConnectRooms()
     {
@@ -179,18 +143,18 @@ public class DungeonGenerator : MonoBehaviour
     }
 
     void CreateRoom(Room room)
-    {
-        Vector2Int bottomLeft = Vector2Int.FloorToInt(room.Position);
-        Vector2Int topRight = bottomLeft + Vector2Int.FloorToInt(room.Size);
+{
+    Vector2Int bottomLeft = Vector2Int.FloorToInt(room.Position);
+    Vector2Int topRight = bottomLeft + Vector2Int.FloorToInt(room.Size);
 
-        for (int x = bottomLeft.x; x < topRight.x; x++)
+    for (int x = bottomLeft.x; x < topRight.x; x++)
+    {
+        for (int y = bottomLeft.y; y < topRight.y; y++)
         {
-            for (int y = bottomLeft.y; y < topRight.y; y++)
-            {
-                tilemap.SetTile(new Vector3Int(x, y, 0), dungeonTile);
-            }
+            tilemap.SetTile(new Vector3Int(x, y, 0), dungeonTile);
         }
     }
+}
 
 
     void CreateCorridor(Room roomA, Room roomB)
@@ -232,5 +196,11 @@ public class DungeonGenerator : MonoBehaviour
                 tilemap.SetTile(new Vector3Int(x, startInt.y, 0), dungeonTile);
             }
         }
+    }
+
+
+    private string GetDebuggerDisplay()
+    {
+        return ToString();
     }
 }

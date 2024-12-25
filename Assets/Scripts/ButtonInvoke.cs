@@ -1,8 +1,7 @@
 using UnityEngine;
 
 // Place this somewhere in your project (do NOT place in an "Editor" folder)
- //Штука для возможности простого добавления кнопки в инспектор. Не особо влияет на работу проекта
- 
+
 public class ButtonInvoke : PropertyAttribute
 {
     /// <summary>
