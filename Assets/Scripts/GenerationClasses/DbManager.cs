@@ -7,7 +7,7 @@ using System;
 
 namespace DbClasses
 {
-class DBManager : MonoBehaviour
+public class DBManager : MonoBehaviour
 {
     //static string dbName = "/Dungeon.db";
     static string dbName = "/DungeonGenerator.db";

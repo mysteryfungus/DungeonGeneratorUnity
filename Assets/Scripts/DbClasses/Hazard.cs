@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DbClasses
 {
-    class Hazard : DbClass
+    public class Hazard : DbClass
     {
         public int id {  get; set; }
         public string Name { get; set; }
