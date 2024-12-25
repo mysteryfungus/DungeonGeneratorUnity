@@ -1,0 +1,5 @@
+@startuml
+interface IButton {
+    + {abstract} OnClick() : void
+}
+@enduml

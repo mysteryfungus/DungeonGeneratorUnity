@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Adjuster : MonoBehaviour //Штука для переноса камеры в центр данжа и зума камеры таким образом, чтоб весь данж был виден

@@ -1,0 +1,11 @@
+@startuml
+class TilemapGrid {
+    OnEnable() : void
+    OnDisable() : void
+    + GenerateGrid(dungeonGenerator:DungeonGenerator) : void
+    GenerateGrid() : void
+}
+MonoBehaviour <|-- TilemapGrid
+TilemapGrid --> "tilemap" Tilemap
+TilemapGrid --> "tilePrefab" TileBase
+@enduml

@@ -1,0 +1,23 @@
+@startuml
+class TabButton {
+    + isActive : bool = false
+    + OnPointerClick(eventData:PointerEventData) : void
+    + OnPointerEnter(eventData:PointerEventData) : void
+    + OnPointerExit(eventData:PointerEventData) : void
+    + OnReset(color:Color) : void
+    + DisablePanel() : void
+}
+class "Func`2"<T1,T2> {
+}
+class "Action`1"<T> {
+}
+MonoBehaviour <|-- TabButton
+IPointerEnterHandler <|-- TabButton
+IPointerExitHandler <|-- TabButton
+IPointerClickHandler <|-- TabButton
+TabButton --> "TabPanel" GameObject
+TabButton --> "Exit<TabButton,Color>" "Func`2"
+TabButton --> "Enter<TabButton,Color>" "Func`2"
+TabButton --> "Click<TabButton,Color>" "Func`2"
+TabButton --> "ChangeActive<TabButton>" "Action`1"
+@enduml

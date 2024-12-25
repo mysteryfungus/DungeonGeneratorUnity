@@ -1,0 +1,14 @@
+@startuml
+class Room {
+    + Room(position:Vector2, size:Vector2)
+    + GetCenter() : Vector2
+    + Intersects(other:Room) : bool
+}
+class Corridor {
+    + Corridor(start:Vector2, end:Vector2)
+}
+Room --> "Position" Vector2
+Room --> "Size" Vector2
+Corridor --> "Start" Vector2
+Corridor --> "End" Vector2
+@enduml

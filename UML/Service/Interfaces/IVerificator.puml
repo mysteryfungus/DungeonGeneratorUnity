@@ -1,0 +1,5 @@
+@startuml
+interface "IVerificator`1"<T> {
+    + {abstract} Check(value:T) : bool
+}
+@enduml
