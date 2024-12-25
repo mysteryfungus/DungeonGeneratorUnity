@@ -1,0 +1,6 @@
+@startuml
+class SimpleSizesVerificator <<static>> {
+    + {static} GetIntFromStringSizeOfRoom(s:string) : int
+    + {static} GetIntFromStringCountOfRoom(s:string) : int
+}
+@enduml

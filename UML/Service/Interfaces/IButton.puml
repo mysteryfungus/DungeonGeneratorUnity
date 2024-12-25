@@ -2,4 +2,7 @@
 interface IButton {
     + {abstract} OnClick() : void
 }
+class "ILink`1"<T> {
+}
+"ILink`1" "<Button>" <|-- IButton
 @enduml

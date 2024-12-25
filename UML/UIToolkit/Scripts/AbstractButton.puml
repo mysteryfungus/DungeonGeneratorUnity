@@ -1,8 +1,8 @@
 @startuml
 abstract class AbstractButton {
-    + Link(uIDocument:UIDocument) : void
-    + {abstract} Action() : void
+    + Link(element:Button) : void
+    + Unlink(element:Button) : void
+    + {abstract} OnClick() : void
 }
-MonoBehaviour <|-- AbstractButton
-ILink <|-- AbstractButton
+IButton <|-- AbstractButton
 @enduml

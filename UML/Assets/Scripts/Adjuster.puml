@@ -1,8 +1,6 @@
 @startuml
 class Adjuster {
     CalculateCameraSize(dungeonGenerator:DungeonGenerator) : float
-    OnEnable() : void
-    OnDisable() : void
     + AdjustPosition(dungeonGenerator:DungeonGenerator) : void
 }
 MonoBehaviour <|-- Adjuster

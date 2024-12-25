@@ -1,0 +1,6 @@
+@startuml
+class UIInjector {
+    + <<override>> InstallBindings() : void
+}
+MonoInstaller <|-- UIInjector
+@enduml

@@ -1,0 +1,12 @@
+@startuml
+class GameObjectInjector {
+    + <<override>> InstallBindings() : void
+    + GetDungeonGenerator() : DungeonGenerator
+    + GetDBManager() : DBManager
+}
+class "Func`1"<T> {
+}
+MonoInstaller <|-- GameObjectInjector
+GameObjectInjector --> "OnGetDungeonGenerator<DungeonGenerator>" "Func`1"
+GameObjectInjector --> "OnGetDBManager<DBManager>" "Func`1"
+@enduml

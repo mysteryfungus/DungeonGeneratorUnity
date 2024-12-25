@@ -2,6 +2,7 @@
 class CameraBounds {
     Start() : void
     LateUpdate() : void
+    UpdateCanvasBounds() : void
     ClampCameraPosition() : void
     + SetZoom(newSize:float) : void
 }

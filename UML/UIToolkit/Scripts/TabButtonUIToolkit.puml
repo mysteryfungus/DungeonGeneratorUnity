@@ -1,6 +1,0 @@
-@startuml
-class TabButtonUIToolkit {
-    + <<override>> Action() : void
-}
-AbstractButton <|-- TabButtonUIToolkit
-@enduml

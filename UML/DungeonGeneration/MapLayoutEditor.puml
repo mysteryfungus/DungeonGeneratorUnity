@@ -1,6 +1,5 @@
 @startuml
 class TilemapEditor {
-    + wallTile : RuleTile?
     + isEditingMode : bool = false
     Update() : void
     + ToggleEditingMode() : void
@@ -8,4 +7,5 @@ class TilemapEditor {
 MonoBehaviour <|-- TilemapEditor
 TilemapEditor --> "tilemap" Tilemap
 TilemapEditor --> "floorTile" RuleTile
+TilemapEditor --> "wallTile" RuleTile
 @enduml

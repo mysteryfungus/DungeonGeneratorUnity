@@ -1,0 +1,8 @@
+@startuml
+class Tab {
+    + Tab(scrollView:ScrollView, button:Button)
+    + InactiveScrollView() : void
+    + ActiveScrollView() : void
+}
+Tab --> "Button" Button
+@enduml

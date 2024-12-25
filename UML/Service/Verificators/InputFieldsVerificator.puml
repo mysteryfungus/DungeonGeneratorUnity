@@ -1,0 +1,10 @@
+@startuml
+class InputFieldsVerificator {
+    + ValidateLevelOfHeros(level:string, param:int) : bool
+    + ValidateCountOfHeros(count:string, param:int) : bool
+    + ValidateMaxSizeOfRooms(size:string, param:int) : bool
+    + ValidateMinSizeOfRooms(size:string, param:int) : bool
+    + ValidateCountOfRooms(count:string, param:int) : bool
+}
+MonoBehaviour <|-- InputFieldsVerificator
+@enduml

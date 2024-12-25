@@ -4,6 +4,8 @@ class CustomInputField {
     + SetBorderSettings(width:float, radious:float) : void
     + SetMarginSettings(margin:float) : void
     + SetPaddingSettings(padding:float) : void
+    + OnInjectValidator(validator:DelegateValidator) : void
+    + Validate(flag:bool, newvalue:int) : void
     + Text : string <<get>> <<set>>
 }
 class UxmlFactory {

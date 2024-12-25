@@ -1,0 +1,13 @@
+@startuml
+class SubmitButton {
+    + SubmitButton(countR:CustomInputField, maxR:CustomInputField, minR:CustomInputField, lvlH:CustomInputField, countH:CustomInputField, _trap:Toggle, _human:Toggle)
+    + SubmitButton(size:DropdownField, count:DropdownField, lvl:CustomInputField, countH:CustomInputField, _trap:Toggle, _human:Toggle)
+    + <<override>> OnClick() : void
+}
+enum SubmitButtonState {
+    HARD,
+    EASY,
+}
+AbstractButton <|-- SubmitButton
+SubmitButton +-- SubmitButtonState
+@enduml

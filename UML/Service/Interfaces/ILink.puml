@@ -1,0 +1,5 @@
+@startuml
+interface "ILink`1"<T> {
+    + Link(element:T) : void
+}
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+class Export {
+    + OnClick() : void
+    NoToolkitCaptureAndSaveAsPDF() : IEnumerator
+    + ToolkitCaptureAndSaveAsPDF() : IEnumerator
+}
+MonoBehaviour <|-- Export
+Export --> "ui" UIDocument
+Export --> "cam" Camera
+@enduml

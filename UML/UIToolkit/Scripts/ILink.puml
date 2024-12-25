@@ -1,5 +1,0 @@
-@startuml
-interface ILink {
-    + Link(iDocument:UIDocument) : void
-}
-@enduml

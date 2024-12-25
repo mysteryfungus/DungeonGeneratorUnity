@@ -1,4 +1,12 @@
 @startuml
+class Export {
+    + OnClick() : void
+    NoToolkitCaptureAndSaveAsPDF() : IEnumerator
+    + ToolkitCaptureAndSaveAsPDF() : IEnumerator
+}
+MonoBehaviour <|-- Export
+Export --> "ui" UIDocument
+Export --> "cam" Camera
 class ButtonInvoke {
     + <<readonly>> customLabel : string
     + <<readonly>> methodName : string
@@ -19,18 +27,10 @@ class MoveCamera {
     Update() : void
 }
 MonoBehaviour <|-- MoveCamera
-class TilemapGrid {
-    OnEnable() : void
-    OnDisable() : void
-    + GenerateGrid(dungeonGenerator:DungeonGenerator) : void
-    GenerateGrid() : void
-}
-MonoBehaviour <|-- TilemapGrid
-TilemapGrid --> "tilemap" Tilemap
-TilemapGrid --> "tilePrefab" TileBase
 class CameraBounds {
     Start() : void
     LateUpdate() : void
+    UpdateCanvasBounds() : void
     ClampCameraPosition() : void
     + SetZoom(newSize:float) : void
 }
@@ -39,42 +39,9 @@ CameraBounds --> "mainCamera" Camera
 CameraBounds --> "canvasRect" RectTransform
 class Adjuster {
     CalculateCameraSize(dungeonGenerator:DungeonGenerator) : float
-    OnEnable() : void
-    OnDisable() : void
     + AdjustPosition(dungeonGenerator:DungeonGenerator) : void
 }
 MonoBehaviour <|-- Adjuster
-class TabGroup {
-    + <<override>> Init() : void
-}
-InitClass <|-- TabGroup
-TabGroup --> "ActiveTabPanel" GameObject
-class GenerateButton {
-    + OnClick() : void
-}
-MonoBehaviour <|-- GenerateButton
-IButton <|-- GenerateButton
-class TabButton {
-    + isActive : bool = false
-    + OnPointerClick(eventData:PointerEventData) : void
-    + OnPointerEnter(eventData:PointerEventData) : void
-    + OnPointerExit(eventData:PointerEventData) : void
-    + OnReset(color:Color) : void
-    + DisablePanel() : void
-}
-class "Func`2"<T1,T2> {
-}
-class "Action`1"<T> {
-}
-MonoBehaviour <|-- TabButton
-IPointerEnterHandler <|-- TabButton
-IPointerExitHandler <|-- TabButton
-IPointerClickHandler <|-- TabButton
-TabButton --> "TabPanel" GameObject
-TabButton --> "Exit<TabButton,Color>" "Func`2"
-TabButton --> "Enter<TabButton,Color>" "Func`2"
-TabButton --> "Click<TabButton,Color>" "Func`2"
-TabButton --> "ChangeActive<TabButton>" "Action`1"
 class NameGenerator {
     nameRowsCount : int = 0
     nounRowsCount : int = 0
@@ -149,13 +116,12 @@ abstract class ObjectGenerator {
 class DungeonGenerator {
     + roomCount : int = 10
     + minRoomSeparation : float = 3f
-    + {static}  <<event>> OnGeneration : Generation 
     Start() : void
     + RegenerateDungeon() : void
     ClearDungeon() : void
     GenerationRoutine() : void
+    FillWalls() : void
     PlaceRooms() : void
-    SeparateRooms() : void
     ConnectRooms() : void
     CreateRoom(room:Room) : void
     CreateCorridor(roomA:Room, roomB:Room) : void
@@ -166,7 +132,6 @@ DungeonGenerator o-> "minRoomSize" Vector2
 DungeonGenerator o-> "maxRoomSize" Vector2
 DungeonGenerator o-> "dungeonSize" Vector2
 class TilemapEditor {
-    + wallTile : RuleTile?
     + isEditingMode : bool = false
     Update() : void
     + ToggleEditingMode() : void
@@ -174,6 +139,7 @@ class TilemapEditor {
 MonoBehaviour <|-- TilemapEditor
 TilemapEditor --> "tilemap" Tilemap
 TilemapEditor --> "floorTile" RuleTile
+TilemapEditor --> "wallTile" RuleTile
 class Room {
     + Room(position:Vector2, size:Vector2)
     + GetCenter() : Vector2
@@ -275,38 +241,48 @@ DbClass <|-- Noun
 Noun --> "Gender" Gender
 class EventBus <<static>> {
 }
-EventBus --> "OnStartGeneration" Action
-abstract class InitClass {
-    + {abstract} Init() : void
+class InputFieldsVerificator {
+    + ValidateLevelOfHeros(level:string, param:int) : bool
+    + ValidateCountOfHeros(count:string, param:int) : bool
+    + ValidateMaxSizeOfRooms(size:string, param:int) : bool
+    + ValidateMinSizeOfRooms(size:string, param:int) : bool
+    + ValidateCountOfRooms(count:string, param:int) : bool
 }
-MonoBehaviour <|-- InitClass
-class Bootstrap {
-    Start() : void
+MonoBehaviour <|-- InputFieldsVerificator
+class SimpleSizesVerificator <<static>> {
+    + {static} GetIntFromStringSizeOfRoom(s:string) : int
+    + {static} GetIntFromStringCountOfRoom(s:string) : int
 }
-MonoBehaviour <|-- Bootstrap
-class RoomSizeVerificator {
-    + Check(value:string) : bool
-}
-class "IVerificator`1"<T> {
-}
-"IVerificator`1" "<string>" <|-- RoomSizeVerificator
-class MapSizeVerificator {
-    + Check(value:string) : bool
-}
-class "IVerificator`1"<T> {
-}
-"IVerificator`1" "<string>" <|-- MapSizeVerificator
-interface "IVerificator`1"<T> {
-    + {abstract} Check(value:T) : bool
+interface "ILink`1"<T> {
+    + Link(element:T) : void
 }
 interface IButton {
     + {abstract} OnClick() : void
 }
+class "ILink`1"<T> {
+}
+"ILink`1" "<Button>" <|-- IButton
+class UIInjector {
+    + <<override>> InstallBindings() : void
+}
+MonoInstaller <|-- UIInjector
+class GameObjectInjector {
+    + <<override>> InstallBindings() : void
+    + GetDungeonGenerator() : DungeonGenerator
+    + GetDBManager() : DBManager
+}
+class "Func`1"<T> {
+}
+MonoInstaller <|-- GameObjectInjector
+GameObjectInjector --> "OnGetDungeonGenerator<DungeonGenerator>" "Func`1"
+GameObjectInjector --> "OnGetDBManager<DBManager>" "Func`1"
 class CustomInputField {
     + CustomInputField()
     + SetBorderSettings(width:float, radious:float) : void
     + SetMarginSettings(margin:float) : void
     + SetPaddingSettings(padding:float) : void
+    + OnInjectValidator(validator:DelegateValidator) : void
+    + Validate(flag:bool, newvalue:int) : void
     + Text : string <<get>> <<set>>
 }
 class UxmlFactory {
@@ -327,26 +303,36 @@ UxmlTraits o-> "_padding" UxmlFloatAttributeDescription
 UxmlTraits o-> "_colorBackground" UxmlColorAttributeDescription
 UxmlTraits o-> "_colorBorder" UxmlColorAttributeDescription
 UxmlTraits o-> "_fontSize" UxmlIntAttributeDescription
-interface ILink {
-    + Link(iDocument:UIDocument) : void
-}
 abstract class AbstractButton {
-    + Link(uIDocument:UIDocument) : void
-    + {abstract} Action() : void
+    + Link(element:Button) : void
+    + Unlink(element:Button) : void
+    + {abstract} OnClick() : void
 }
-MonoBehaviour <|-- AbstractButton
-ILink <|-- AbstractButton
-class TabButtonUIToolkit {
-    + <<override>> Action() : void
+IButton <|-- AbstractButton
+class SubmitButton {
+    + SubmitButton(countR:CustomInputField, maxR:CustomInputField, minR:CustomInputField, lvlH:CustomInputField, countH:CustomInputField, _trap:Toggle, _human:Toggle)
+    + SubmitButton(size:DropdownField, count:DropdownField, lvl:CustomInputField, countH:CustomInputField, _trap:Toggle, _human:Toggle)
+    + <<override>> OnClick() : void
 }
-AbstractButton <|-- TabButtonUIToolkit
+enum SubmitButtonState {
+    HARD,
+    EASY,
+}
+AbstractButton <|-- SubmitButton
+SubmitButton +-- SubmitButtonState
 class TabController {
-    + AddTab(element:VisualElement) : void
-    + RemoveTab(element:VisualElement) : void
-    + ActiveTab(element:VisualElement) : void
+    + AddTab(element:Tab) : void
+    + RemoveTab(element:Tab) : void
+    + ActiveTab(element:Tab) : void
 }
-MonoBehaviour <|-- TabController
+class Tab {
+    + Tab(scrollView:ScrollView, button:Button)
+    + InactiveScrollView() : void
+    + ActiveScrollView() : void
+}
+Tab --> "Button" Button
 class UIToolkitManager {
 }
 MonoBehaviour <|-- UIToolkitManager
+UIToolkitManager --> "Submit" AbstractButton
 @enduml
