@@ -1,0 +1,11 @@
+@startuml
+class TilemapEditor {
+    + wallTile : RuleTile?
+    + isEditingMode : bool = false
+    Update() : void
+    + ToggleEditingMode() : void
+}
+MonoBehaviour <|-- TilemapEditor
+TilemapEditor --> "tilemap" Tilemap
+TilemapEditor --> "floorTile" RuleTile
+@enduml

@@ -1,0 +1,7 @@
+@startuml
+class TabGroup {
+    + <<override>> Init() : void
+}
+InitClass <|-- TabGroup
+TabGroup --> "ActiveTabPanel" GameObject
+@enduml

@@ -1,0 +1,8 @@
+@startuml
+class MoveCamera {
+    + panSpeed : float = 20f
+    + zoomSpeed : float = 1f
+    Update() : void
+}
+MonoBehaviour <|-- MoveCamera
+@enduml

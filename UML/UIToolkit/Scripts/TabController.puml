@@ -1,0 +1,8 @@
+@startuml
+class TabController {
+    + AddTab(element:VisualElement) : void
+    + RemoveTab(element:VisualElement) : void
+    + ActiveTab(element:VisualElement) : void
+}
+MonoBehaviour <|-- TabController
+@enduml

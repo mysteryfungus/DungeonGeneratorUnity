@@ -1,0 +1,6 @@
+@startuml
+class Bootstrap {
+    Start() : void
+}
+MonoBehaviour <|-- Bootstrap
+@enduml

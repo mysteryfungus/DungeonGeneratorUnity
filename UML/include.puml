@@ -1,0 +1,352 @@
+@startuml
+class ButtonInvoke {
+    + <<readonly>> customLabel : string
+    + <<readonly>> methodName : string
+    + <<readonly>> methodParameter : object
+    + ButtonInvoke(methodName:string, methodParameter:object, displayIn:DisplayIn, customLabel:string)
+}
+enum DisplayIn {
+    PlayMode,
+    EditMode,
+    PlayAndEditModes,
+}
+PropertyAttribute <|-- ButtonInvoke
+ButtonInvoke --> "displayIn" DisplayIn
+ButtonInvoke +-- DisplayIn
+class MoveCamera {
+    + panSpeed : float = 20f
+    + zoomSpeed : float = 1f
+    Update() : void
+}
+MonoBehaviour <|-- MoveCamera
+class TilemapGrid {
+    OnEnable() : void
+    OnDisable() : void
+    + GenerateGrid(dungeonGenerator:DungeonGenerator) : void
+    GenerateGrid() : void
+}
+MonoBehaviour <|-- TilemapGrid
+TilemapGrid --> "tilemap" Tilemap
+TilemapGrid --> "tilePrefab" TileBase
+class CameraBounds {
+    Start() : void
+    LateUpdate() : void
+    ClampCameraPosition() : void
+    + SetZoom(newSize:float) : void
+}
+MonoBehaviour <|-- CameraBounds
+CameraBounds --> "mainCamera" Camera
+CameraBounds --> "canvasRect" RectTransform
+class Adjuster {
+    CalculateCameraSize(dungeonGenerator:DungeonGenerator) : float
+    OnEnable() : void
+    OnDisable() : void
+    + AdjustPosition(dungeonGenerator:DungeonGenerator) : void
+}
+MonoBehaviour <|-- Adjuster
+class TabGroup {
+    + <<override>> Init() : void
+}
+InitClass <|-- TabGroup
+TabGroup --> "ActiveTabPanel" GameObject
+class GenerateButton {
+    + OnClick() : void
+}
+MonoBehaviour <|-- GenerateButton
+IButton <|-- GenerateButton
+class TabButton {
+    + isActive : bool = false
+    + OnPointerClick(eventData:PointerEventData) : void
+    + OnPointerEnter(eventData:PointerEventData) : void
+    + OnPointerExit(eventData:PointerEventData) : void
+    + OnReset(color:Color) : void
+    + DisablePanel() : void
+}
+class "Func`2"<T1,T2> {
+}
+class "Action`1"<T> {
+}
+MonoBehaviour <|-- TabButton
+IPointerEnterHandler <|-- TabButton
+IPointerExitHandler <|-- TabButton
+IPointerClickHandler <|-- TabButton
+TabButton --> "TabPanel" GameObject
+TabButton --> "Exit<TabButton,Color>" "Func`2"
+TabButton --> "Enter<TabButton,Color>" "Func`2"
+TabButton --> "Click<TabButton,Color>" "Func`2"
+TabButton --> "ChangeActive<TabButton>" "Action`1"
+class NameGenerator {
+    nameRowsCount : int = 0
+    nounRowsCount : int = 0
+    adjRowsCount : int = 0
+    result : string = ""
+    temp_word : string = ""
+    + NameGenerator()
+    + GenerateName() : string
+}
+class "List`1"<T> {
+}
+ObjectGenerator <|-- NameGenerator
+NameGenerator o-> "found_name" Name
+NameGenerator o-> "found_noun" Noun
+NameGenerator o-> "found_adjective" Adjective
+NameGenerator --> "gender" Gender
+NameGenerator o-> "names<Name>" "List`1"
+NameGenerator o-> "nouns<Noun>" "List`1"
+NameGenerator o-> "adjectives<Adjective>" "List`1"
+class ThreatGenerator {
+    + ThreatGenerator()
+    + BuildEncounter(party_member_amount:int, party_level:int, room_amount:int, useHumansInBattle:bool, useHazards:bool) : List<Tuple<int, List<Monster>, List<Hazard>>>
+    + BuildEncounter(party_member_amount:int, party_level:int, roomsCoordinates:List<object>, useHumansInBattle:bool, useHazards:bool) : List<Tuple<object, List<Monster>, List<Hazard>>>
+    + RandomDifficulty(random:System.Random) : string
+    + BuildRoom(difficulty:string, useHumansInBattle:bool, useHazards:bool) : void
+}
+class "Dictionary`2"<T1,T2> {
+}
+ObjectGenerator <|-- ThreatGenerator
+ThreatGenerator o-> "xb_by_difficulty<string,int>" "Dictionary`2"
+ThreatGenerator o-> "xp_by_party_size<string,int>" "Dictionary`2"
+class HazardGenerator {
+    + HazardGenerator()
+    + BuildHazard(xpbudget:int, party_level:int) : List<Hazard>
+    + BuildSimpleHazard(xpbudget:int, party_level:int) : int
+}
+class "Dictionary`2"<T1,T2> {
+}
+ObjectGenerator <|-- HazardGenerator
+HazardGenerator o-> "simpleExpCostList<int,int>" "Dictionary`2"
+HazardGenerator o-> "complexExpCostList<int,int>" "Dictionary`2"
+HazardGenerator o-> "simple_hazards_by_lvl<int,List<Hazard>>" "Dictionary`2"
+HazardGenerator o-> "complex_hazards_by_lvl<int,List<Hazard>>" "Dictionary`2"
+HazardGenerator --> "hazard" Hazard
+class DBManager {
+    {static} dbName : string = "/DungeonGenerator.db"
+    + {static} dbLink : string
+    + useHumansInBattle : bool = true
+    + useHazards : bool = true
+    Awake() : void
+    InitGenerators() : void
+    {static} CheckDB() : bool
+    + GenerateRoomsContent(partyMemberAmount:int, partyLevel:int, roomAmount:int, useHumansInBattle:bool, useHazards:bool) : List<Tuple<int, List<Monster>, List<Hazard>>>
+    + GenerateRoomsContent(partyMemberAmount:int, partyLevel:int, roomCoordinates:List<object>, useHumansInBattle:bool, useHazards:bool) : List<Tuple<object, List<Monster>, List<Hazard>>>
+    + SaveRoomContentsToFile(rooms:List<Tuple<object, List<Monster>, List<Hazard>>>) : void
+    generateDungeonName() : String
+}
+MonoBehaviour <|-- DBManager
+class MonsterGenerator {
+    + MonsterGenerator()
+    + useHumansInBattle : bool
+    + BuildCombat(xpbudget:int, party_level:int, _useHumansInBattle:bool) : List<Monster>
+}
+class "Dictionary`2"<T1,T2> {
+}
+ObjectGenerator <|-- MonsterGenerator
+MonsterGenerator --> "monster" Monster
+MonsterGenerator o-> "expcostlist<int,int>" "Dictionary`2"
+MonsterGenerator o-> "monsters_by_lvl<int,List<Monster>>" "Dictionary`2"
+abstract class ObjectGenerator {
+}
+class DungeonGenerator {
+    + roomCount : int = 10
+    + minRoomSeparation : float = 3f
+    + {static}  <<event>> OnGeneration : Generation 
+    Start() : void
+    + RegenerateDungeon() : void
+    ClearDungeon() : void
+    GenerationRoutine() : void
+    PlaceRooms() : void
+    SeparateRooms() : void
+    ConnectRooms() : void
+    CreateRoom(room:Room) : void
+    CreateCorridor(roomA:Room, roomB:Room) : void
+    CreateCorridorSegment(start:Vector2, end:Vector2) : void
+}
+MonoBehaviour <|-- DungeonGenerator
+DungeonGenerator o-> "minRoomSize" Vector2
+DungeonGenerator o-> "maxRoomSize" Vector2
+DungeonGenerator o-> "dungeonSize" Vector2
+class TilemapEditor {
+    + wallTile : RuleTile?
+    + isEditingMode : bool = false
+    Update() : void
+    + ToggleEditingMode() : void
+}
+MonoBehaviour <|-- TilemapEditor
+TilemapEditor --> "tilemap" Tilemap
+TilemapEditor --> "floorTile" RuleTile
+class Room {
+    + Room(position:Vector2, size:Vector2)
+    + GetCenter() : Vector2
+    + Intersects(other:Room) : bool
+}
+class Corridor {
+    + Corridor(start:Vector2, end:Vector2)
+}
+Room --> "Position" Vector2
+Room --> "Size" Vector2
+Corridor --> "Start" Vector2
+Corridor --> "End" Vector2
+class Name {
+    + Base : string <<get>> <<set>>
+    + SingularNominative : string <<get>> <<set>>
+    + SingularGenitive : string <<get>> <<set>>
+    + PluralNominative : string <<get>> <<set>>
+    + PluralGenitive : string <<get>> <<set>>
+    + Name(Base:string, SingularNominative:string, SingularGenitive:string, PluralNominative:string, PluralGenitive:string, gender:Gender)
+    + {static} ToName(values:object[]) : Name
+    + SingNom() : string
+    + SingGen() : string
+    + PluralNom() : string
+    + PluralGen() : string
+}
+DbClass <|-- Name
+Name --> "Gender" Gender
+class Monster {
+    + id : int <<get>> <<set>>
+    + Name : string <<get>> <<set>>
+    + Description : string <<get>> <<set>>
+    + MechDescription : string <<get>> <<set>>
+    + Level : int <<get>> <<set>>
+    + Monster()
+    + Monster(id:int, Name:string, Description:string, MechDescription:string, Level:int)
+    + {static} ToMonster(values:object[]) : Monster
+    + <<override>> ToString() : string
+    + ToTextFileString() : string
+}
+DbClass <|-- Monster
+class Adjective {
+    + Base : string <<get>> <<set>>
+    + SingularNominativeFeminine : string <<get>> <<set>>
+    + SingularGenitiveFeminine : string <<get>> <<set>>
+    + SingularNominativeMasculine : string <<get>> <<set>>
+    + SingularNominativeNeuter : string <<get>> <<set>>
+    + SingularGenitiveOther : string <<get>> <<set>>
+    + PluralNominative : string <<get>> <<set>>
+    + PluralGenitive : string <<get>> <<set>>
+    + Adjective(Base:string, SingularNominativeFeminine:string, SingularGenitiveFeminine:string, SingularNominativeMasculine:string, SingularNominativeNeuter:string, SingularGenitiveOther:string, PluralNominative:string, PluralGenitive:string)
+    + {static} ToAdjective(values:object[]) : Adjective
+    + SingNomFem(Title:int) : string
+    + SingNomMasc(Title:int) : string
+    + SingNomNeuter(Title:int) : string
+    + SingGenFem(Title:int) : string
+    + SingGenOther(Title:int) : string
+    + PluralNom(Title:int) : string
+    + PluralGen(Title:int) : string
+}
+DbClass <|-- Adjective
+class Hazard {
+    + id : int <<get>> <<set>>
+    + Name : string <<get>> <<set>>
+    + Complexity : string <<get>> <<set>>
+    + Description : string <<get>> <<set>>
+    + MechDescription : string <<get>> <<set>>
+    + Level : int <<get>> <<set>>
+    + Stealth : string <<get>> <<set>>
+    + Hazard()
+    + Hazard(id:int, name:string, complexity:string, description:string, mechDescription:string, level:int, stealth:string)
+    + {static} ToHazard(values:object[]) : Hazard
+    + <<override>> ToString() : string
+    + ToTextFileString() : string
+}
+DbClass <|-- Hazard
+enum Gender {
+    None,
+    Masculine,
+    Feminine,
+    Neuter,
+}
+abstract class DbClass {
+}
+class Noun {
+    + Base : string <<get>> <<set>>
+    + SingularNominative : string <<get>> <<set>>
+    + SingularGenitive : string <<get>> <<set>>
+    + PluralNominative : string <<get>> <<set>>
+    + PluralGenitive : string <<get>> <<set>>
+    + Title : int <<get>> <<set>>
+    + Noun(Base:string, SingularNominative:string, SingularGenitive:string, PluralNominative:string, PluralGenitive:string, gender:Gender, title:int)
+    + {static} ToNoun(values:object[]) : Noun
+    + SingNom() : string
+    + SingGen() : string
+    + PluralNom() : string
+    + PluralGen() : string
+}
+DbClass <|-- Noun
+Noun --> "Gender" Gender
+class EventBus <<static>> {
+}
+EventBus --> "OnStartGeneration" Action
+abstract class InitClass {
+    + {abstract} Init() : void
+}
+MonoBehaviour <|-- InitClass
+class Bootstrap {
+    Start() : void
+}
+MonoBehaviour <|-- Bootstrap
+class RoomSizeVerificator {
+    + Check(value:string) : bool
+}
+class "IVerificator`1"<T> {
+}
+"IVerificator`1" "<string>" <|-- RoomSizeVerificator
+class MapSizeVerificator {
+    + Check(value:string) : bool
+}
+class "IVerificator`1"<T> {
+}
+"IVerificator`1" "<string>" <|-- MapSizeVerificator
+interface "IVerificator`1"<T> {
+    + {abstract} Check(value:T) : bool
+}
+interface IButton {
+    + {abstract} OnClick() : void
+}
+class CustomInputField {
+    + CustomInputField()
+    + SetBorderSettings(width:float, radious:float) : void
+    + SetMarginSettings(margin:float) : void
+    + SetPaddingSettings(padding:float) : void
+    + Text : string <<get>> <<set>>
+}
+class UxmlFactory {
+}
+class UxmlTraits {
+    + <<override>> Init(ve:VisualElement, bag:IUxmlAttributes, cc:CreationContext) : void
+}
+class "UxmlFactory`2"<T1,T2> {
+}
+VisualElement <|-- CustomInputField
+CustomInputField --> "TextField" TextField
+"UxmlFactory`2" "<CustomInputField,UxmlTraits>" <|-- UxmlFactory
+UxmlTraits o-> "_description" UxmlStringAttributeDescription
+UxmlTraits o-> "_border" UxmlFloatAttributeDescription
+UxmlTraits o-> "_radious" UxmlFloatAttributeDescription
+UxmlTraits o-> "_margin" UxmlFloatAttributeDescription
+UxmlTraits o-> "_padding" UxmlFloatAttributeDescription
+UxmlTraits o-> "_colorBackground" UxmlColorAttributeDescription
+UxmlTraits o-> "_colorBorder" UxmlColorAttributeDescription
+UxmlTraits o-> "_fontSize" UxmlIntAttributeDescription
+interface ILink {
+    + Link(iDocument:UIDocument) : void
+}
+abstract class AbstractButton {
+    + Link(uIDocument:UIDocument) : void
+    + {abstract} Action() : void
+}
+MonoBehaviour <|-- AbstractButton
+ILink <|-- AbstractButton
+class TabButtonUIToolkit {
+    + <<override>> Action() : void
+}
+AbstractButton <|-- TabButtonUIToolkit
+class TabController {
+    + AddTab(element:VisualElement) : void
+    + RemoveTab(element:VisualElement) : void
+    + ActiveTab(element:VisualElement) : void
+}
+MonoBehaviour <|-- TabController
+class UIToolkitManager {
+}
+MonoBehaviour <|-- UIToolkitManager
+@enduml
