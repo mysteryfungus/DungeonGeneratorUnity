@@ -1,8 +1,0 @@
-@startuml
-class MapSizeVerificator {
-    + Check(value:string) : bool
-}
-class "IVerificator`1"<T> {
-}
-"IVerificator`1" "<string>" <|-- MapSizeVerificator
-@enduml

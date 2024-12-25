@@ -2,7 +2,7 @@
 
 namespace DbClasses
 {
-    public class Monster : DbClass
+    class Monster : DbClass
     {
         public int id { get; set; }
         public string Name { get; set; }
@@ -37,11 +37,6 @@ namespace DbClasses
         public override string ToString()
         {
             return Name;
-        }
-
-        public string ToTextFileString()
-        {
-            return Name + " / Существо " + Level + "\nОписание: "+Description+MechDescription;
         }
     }
 }

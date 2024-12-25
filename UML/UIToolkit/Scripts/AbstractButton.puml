@@ -1,8 +1,0 @@
-@startuml
-abstract class AbstractButton {
-    + Link(uIDocument:UIDocument) : void
-    + {abstract} Action() : void
-}
-MonoBehaviour <|-- AbstractButton
-ILink <|-- AbstractButton
-@enduml

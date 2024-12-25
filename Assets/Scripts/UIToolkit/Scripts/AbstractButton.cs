@@ -1,17 +1,23 @@
 ﻿using UnityEngine;
 using UnityEngine.UIElements;
 
-public abstract class AbstractButton : IButton
+public abstract class AbstractButton : MonoBehaviour, ILink
 {
-    public void Link(Button element)
+    [SerializeField] protected string nameOfElement;
+    protected VisualElement root;
+
+    public void Link(UIDocument uIDocument)
     {
-        element.clicked += OnClick;
+        root = uIDocument.rootVisualElement;
+
+        Button button = root.Q<Button>(nameOfElement);
+
+        if (button != null)
+        {
+            Debug.Log($"{nameOfElement} был привязан");
+            button.clicked += Action;
+        }
     }
 
-    public void Unlink(Button element)
-    {
-        element.clicked -= OnClick;
-    }
-
-    public abstract void OnClick();
+    public abstract void Action();
 }

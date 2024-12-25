@@ -357,10 +357,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 579838222}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0b8e7a53898ef74cab90b836bc125e1, type: 3}
+  m_Script: {fileID: 11500000, guid: f29db10eb4c537b4b849a53c665d1f5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Camera: {fileID: 579838224}
+  mainCamera: {fileID: 579838224}
+  cellSize: 10.24
+  gridParent: {fileID: 76113456}
+  brushPrefab: {fileID: 2007812796}
 --- !u!1 &627370577
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,7 +424,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilemap: {fileID: 1434561927}
   tilePrefab: {fileID: 11400000, guid: e794f844fcfe0d04caff92af4b2bb29d, type: 2}
-  bounds: {fileID: 0}
+  gridWidth: 20
+  gridHeight: 20
 --- !u!1 &811801123
 GameObject:
   m_ObjectHideFlags: 0
@@ -954,10 +958,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e8232ecdf73a80409a2e085b86ecc45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridTilePrefab: {fileID: 0}
-  gridWidth: 20
-  gridHeight: 20
-  tileSpacing: 1.1
+  gridTilePrefab: {fileID: 2010205627}
+  gridWidth: 160
+  gridHeight: 80
+  tileSpacing: 10.24
 --- !u!1 &1616148771
 GameObject:
   m_ObjectHideFlags: 0

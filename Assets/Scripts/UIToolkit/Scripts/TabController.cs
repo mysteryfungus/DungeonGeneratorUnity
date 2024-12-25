@@ -3,34 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class TabController
+public class TabController : MonoBehaviour
 {
-    private List<Tab> tabs = new List<Tab>();
+    private List<VisualElement> tabs = new List<VisualElement>();
 
-    public void AddTab(Tab element)
+    public void AddTab(VisualElement element)
     {
         tabs.Add(element);
-        element.Button.clicked += () =>
-        {
-            ActiveTab(element);
-        };
     }
 
-    public void RemoveTab(Tab element) 
+    public void RemoveTab(VisualElement element) 
     { 
         tabs.Remove(element); 
     }
 
-    public void ActiveTab(Tab element)
+    public void ActiveTab(VisualElement element)
     {
         if (tabs.Exists((x) => x == element))
         {
-            //Debug.Log("Элемент есть в списке вкладок");
+            Debug.Log("Элемент есть в списке вкладок");
             foreach (var v in tabs)
             {
-                v.InactiveScrollView();
+                v.AddToClassList("settings-panel-disabled");
             }
-            element.ActiveScrollView();
+            element.RemoveFromClassList("settings-panel-disabled");
         }
     }
 }

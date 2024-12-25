@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +7,6 @@ using UnityEngine.UIElements;
 public class CustomInputField : VisualElement
 {
     protected TextField textField;
-    protected DelegateValidator _validator;
 
     public CustomInputField()
     {
@@ -47,23 +45,6 @@ public class CustomInputField : VisualElement
         field.style.paddingRight = padding;
         field.style.paddingBottom = padding;
         field.style.paddingTop = padding;
-    }
-
-    public void OnInjectValidator(DelegateValidator validator)
-    {
-        _validator = validator;
-    }
-
-
-    public void Validate(ref bool flag, out int newvalue)
-    {
-        bool answer = _validator.Invoke(Text, out newvalue);
-
-        if (!answer)
-        {
-            Text = $"{newvalue}";
-            flag = false;
-        }
     }
 
     public string Text

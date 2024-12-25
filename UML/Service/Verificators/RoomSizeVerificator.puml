@@ -1,8 +1,0 @@
-@startuml
-class RoomSizeVerificator {
-    + Check(value:string) : bool
-}
-class "IVerificator`1"<T> {
-}
-"IVerificator`1" "<string>" <|-- RoomSizeVerificator
-@enduml

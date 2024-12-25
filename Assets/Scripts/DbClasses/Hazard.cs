@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DbClasses
 {
-    public class Hazard : DbClass
+    class Hazard : DbClass
     {
         public int id {  get; set; }
         public string Name { get; set; }
@@ -42,11 +42,6 @@ namespace DbClasses
         public override string ToString()
         {
             return Name;
-        }
-
-        public string ToTextFileString()
-        {
-            return Name + " / "+ Complexity +" опасность" + Level + "\nСкрытность: КС "+ Stealth + "\nОписание: " +Description+"\n"+MechDescription;
         }
     }
 }

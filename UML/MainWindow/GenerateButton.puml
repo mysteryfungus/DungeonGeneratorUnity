@@ -1,7 +1,0 @@
-@startuml
-class GenerateButton {
-    + OnClick() : void
-}
-MonoBehaviour <|-- GenerateButton
-IButton <|-- GenerateButton
-@enduml

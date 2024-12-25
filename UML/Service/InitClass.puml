@@ -1,6 +1,0 @@
-@startuml
-abstract class InitClass {
-    + {abstract} Init() : void
-}
-MonoBehaviour <|-- InitClass
-@enduml
