@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "DungeonGeneratorUnity.sln"
+    "dotnet.defaultSolution": "DungeonGenerator.sln"
 }
